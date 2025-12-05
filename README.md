@@ -1,27 +1,27 @@
-# 🏭 SaaS Factory - Crea Apps en Minutos con IA
+# 🏭 SaaS Factory V2 - De Idea a Producción en Minutos
 
-Sistema de templates para construir aplicaciones **production-ready** en tiempo record usando Claude Code.
+> *"La línea de ensamblaje de Ford aplicada al software."*
 
-## 🎯 ¿Qué es esto?
+Sistema de comandos inteligentes para construir aplicaciones **production-ready** con IA.
 
-**SaaS Factory** te permite crear aplicaciones completas (frontend, backend, base de datos) en minutos en lugar de días. No necesitas ser programador - Claude Code (IA) hace el trabajo pesado por ti.
+## 🎯 ¿Qué es SaaS Factory?
 
-## 📦 3 Setups Disponibles
+**Un solo comando. Todo listo.**
 
-| Setup | ¿Para qué sirve? | Stack Tecnológico |
-|-------|------------------|-------------------|
-| **setup/** | Solo configuración de Claude Code | Configuración base |
-| **nextjs-claude-setup/** | Aplicaciones web frontend | Next.js + Supabase |
-| **python-claude-setup/** | Aplicaciones full-stack completas | Next.js + FastAPI + Supabase |
+```bash
+cd ~/mi-nuevo-proyecto
+saas-factory
+```
+
+La IA ya sabe cómo trabajar. Tú solo describes lo que quieres construir.
 
 ---
 
-## 🚀 Quick Start - Configuración en 3 Pasos (2 minutos)
+## 🚀 Quick Start (2 minutos)
 
-### Paso 1: Descarga este repositorio
+### Paso 1: Clona el repositorio
 
 ```bash
-# Copia y pega esto en tu terminal:
 git clone https://github.com/daniel-carreon/saas-factory-setup.git
 cd saas-factory-setup
 ```
@@ -29,320 +29,210 @@ cd saas-factory-setup
 ### Paso 2: Abre en Claude Code
 
 ```bash
-# Abre este proyecto en Claude Code:
-claude-code .
+claude .
 ```
 
-### Paso 3: Pídele ayuda a Claude Code
-
-Una vez que Claude Code esté abierto, **simplemente escribe esto en el chat**:
+### Paso 3: Pídele que configure el alias
 
 ```
-Hola, ayúdame a configurar SaaS Factory en mi computadora siguiendo las instrucciones de este README.
+Configura el alias "saas-factory" en mi terminal
 ```
 
-**Claude Code automáticamente:**
-1. ✅ Detectará tu sistema (Mac/Linux/Windows)
-2. ✅ Detectará tu terminal (zsh/bash)
-3. ✅ Te preguntará qué setup quieres (Next.js o Python)
-4. ✅ Configurará todo automáticamente
-5. ✅ Te dirá cómo usarlo
-
-**Listo! No necesitas hacer nada más.** Claude Code leerá las instrucciones de abajo y configurará todo por ti.
+Claude Code detectará tu sistema y configurará todo automáticamente.
 
 ---
 
-## 🤖 Instrucciones para Claude Code (AI Assistant)
+## 🛠️ Comandos Disponibles
 
-> **Nota para usuarios**: Esta sección es para que Claude Code sepa qué hacer. No necesitas leerla si solo quieres usar el sistema.
+Una vez configurado, estos comandos están disponibles en cualquier proyecto:
 
-### Cuando el usuario pida ayuda para configurar SaaS Factory:
-
-#### 1. **Detectar el Sistema del Usuario**
-
-```bash
-# Detectar shell automáticamente
-echo $SHELL
-# Si retorna /bin/zsh → usar ~/.zshrc
-# Si retorna /bin/bash → usar ~/.bashrc
-
-# Detectar ubicación actual del repo
-pwd
-# Guardar esta ruta como REPO_PATH
-```
-
-#### 2. **Preguntar al Usuario qué Setup Quiere**
-
-Usa `AskUserQuestion` con estas opciones:
+### `/new-app` - El Arquitecto
+Entrevista de negocio para definir tu SaaS B2B.
 
 ```
-Pregunta: "¿Qué tipo de aplicación vas a crear?"
-
-Opciones:
-1. "Aplicación web frontend" → nextjs-claude-setup
-2. "Aplicación completa (frontend + backend)" → python-claude-setup
-3. "Ambos (quiero tener las dos opciones)" → Ambos
+/new-app
 ```
 
-#### 3. **Generar Aliases con las Rutas Correctas**
+El agente actúa como **Consultor de Negocio Senior**:
+- Extrae el dolor del cliente
+- Define el flujo principal (Happy Path)
+- Identifica usuarios y datos
+- Genera `BUSINESS_LOGIC.md` con especificación técnica
 
-Basado en la respuesta, genera los aliases dinámicamente:
-
-**Para Next.js:**
-```bash
-alias nextjs-claude-setup="cp [REPO_PATH]/nextjs-claude-setup/CLAUDE.md . && cp -r [REPO_PATH]/nextjs-claude-setup/.claude . && cp [REPO_PATH]/nextjs-claude-setup/.mcp.json . && cp [REPO_PATH]/nextjs-claude-setup/.gitignore . && cp [REPO_PATH]/nextjs-claude-setup/README.md ."
-```
-
-**Para Python:**
-```bash
-alias python-claude-setup="cp [REPO_PATH]/python-claude-setup/CLAUDE.md . && cp -r [REPO_PATH]/python-claude-setup/.claude . && cp [REPO_PATH]/python-claude-setup/.mcp.json . && cp [REPO_PATH]/python-claude-setup/.gitignore . && cp [REPO_PATH]/python-claude-setup/README.md ."
-```
-
-**Importante:** Reemplaza `[REPO_PATH]` con la ruta absoluta detectada en el paso 1.
-
-#### 4. **Añadir Aliases al Archivo de Configuración**
-
-```bash
-# Añadir al archivo correcto (.zshrc o .bashrc)
-echo "[ALIAS_GENERADO]" >> [RC_FILE]
-
-# Aplicar cambios inmediatamente
-source [RC_FILE]
-```
-
-#### 5. **Validar que Funcionó**
-
-```bash
-# Verificar que el alias existe
-type nextjs-claude-setup  # o python-claude-setup
-
-# Debe retornar: "nextjs-claude-setup is an alias for..."
-```
-
-#### 6. **Explicar al Usuario Cómo Usarlo**
-
-Muéstrale este mensaje:
+### `/landing` - The Money Maker
+Genera landing pages de alta conversión.
 
 ```
-🎉 ¡Configuración completa!
-
-Ahora puedes crear una nueva aplicación en segundos:
-
-1. Ve a cualquier carpeta:
-   cd ~/mis-proyectos/mi-nueva-app
-
-2. Ejecuta el comando:
-   nextjs-claude-setup    (o python-claude-setup)
-
-3. Abre en Claude Code:
-   claude-code .
-
-4. Empieza a desarrollar con IA
-
-¡Eso es todo! Tienes toda la configuración lista:
-✅ System prompt optimizado (CLAUDE.md)
-✅ Comandos, agentes y skills
-✅ Configuración de MCPs
-✅ README con guía completa
+/landing
 ```
 
-#### 7. **Troubleshooting Común**
-
-Si el usuario reporta problemas:
-
-**"No funciona el alias":**
-```bash
-# Verificar que se aplicaron los cambios
-source ~/.zshrc  # o ~/.bashrc
-
-# Si sigue sin funcionar, verificar que la ruta es correcta
-cat ~/.zshrc | grep claude-setup
-```
-
-**"No encuentro mi archivo .zshrc":**
-```bash
-# Crear archivo si no existe
-touch ~/.zshrc
-
-# Volver a añadir alias
-```
+El agente actúa como **Copywriter y Diseñador de Clase Mundial**:
+- Entrevista sobre objetivo y vibe
+- Escribe copy persuasivo (AIDA/PAS)
+- Diseña y ejecuta el código directamente
+- Valida con Playwright
 
 ---
 
-## 💡 ¿Qué Incluyen los Setups?
+## 📦 ¿Qué Incluye?
 
-Cada setup viene con **TODO lo necesario** para empezar a desarrollar:
-
-### 📄 Archivos Incluidos
+Cuando ejecutas `saas-factory` en un proyecto, obtienes:
 
 ```
 tu-proyecto/
-├── CLAUDE.md                 # System prompt - La IA lee esto automáticamente
-├── README.md                 # Guía específica del setup
-├── .mcp.json                 # Configuración de herramientas IA
-├── .gitignore                # Archivos a ignorar en git
+├── CLAUDE.md              # System prompt - La IA lee esto automáticamente
+├── .mcp.json              # Configuración de herramientas IA
 │
-└── .claude/                  # Configuración de Claude Code
-    ├── commands/             # 7 comandos listos (/explorador, /ejecutar-prp, etc.)
-    ├── agents/               # 2 agentes especializados
-    ├── PRPs/templates/       # Templates para features complejas
-    ├── prompts/              # Metodologías (bucle agéntico, etc.)
-    ├── hooks/                # Sistema de logging
-    └── skills/               # Skills reutilizables + skill-creator
+└── .claude/
+    ├── commands/          # Comandos slash (/new-app, /landing, etc.)
+    ├── prompts/           # Metodología SaaS Factory
+    ├── agents/            # Agentes especializados
+    ├── PRPs/              # Templates para features complejas
+    └── skills/            # Skills reutilizables
 ```
-
-### 🎯 Características Principales
-
-#### 1. **System Prompt Optimizado (CLAUDE.md)**
-El agente de Claude Code lee este archivo automáticamente y sabe:
-- Principios de desarrollo (KISS, DRY, SOLID)
-- Arquitectura del proyecto
-- Comandos disponibles
-- Testing y security best practices
-- Convenciones de código
-
-#### 2. **Comandos Slash Listos**
-Ejecuta comandos directamente en Claude Code:
-- `/explorador` - Analiza tu código
-- `/ejecutar-prp` - Implementa features complejas
-- `/generar-prp` - Genera plan para nuevas features
-- `/preparar-paralelo` - Tareas en paralelo
-- Y más...
-
-#### 3. **Agentes Especializados**
-- **Codebase Analyst**: Analiza arquitectura y patrones
-- **Gestor Documentación**: Mantiene docs actualizados
-
-#### 4. **Skill Creator**
-Crea y reutiliza "skills" (paquetes de conocimiento):
-```bash
-python .claude/skills/skill-creator/scripts/init_skill.py mi-skill
-```
-
-#### 5. **Arquitecturas Optimizadas para IA**
-- **Frontend**: Feature-First (cada feature en su carpeta)
-- **Backend**: Clean Architecture (capas bien definidas)
-- Diseñadas para que la IA entienda el contexto rápidamente
 
 ---
 
-## 🛠️ Método Alternativo (Manual)
+## 🏗️ El Golden Path
 
-Si prefieres no usar aliases, puedes copiar manualmente:
+**Un solo stack. Sin decisiones innecesarias.**
+
+| Capa | Tecnología |
+|------|------------|
+| Frontend | Next.js 15 + TypeScript |
+| Estilos | Tailwind CSS + shadcn/ui |
+| Auth | Supabase (Email/Password) |
+| Database | Supabase (PostgreSQL) |
+| Validación | Zod |
+| State | Zustand |
+| Testing | Playwright |
+| Deploy | Vercel |
+
+**¿Por qué este stack?**
+- Probado en producción
+- Excelente DX (Developer Experience)
+- La IA lo entiende perfectamente
+- Deploy en 1 click
+
+---
+
+## 🔧 Configuración Manual del Alias
+
+Si prefieres configurar manualmente:
+
+### Para zsh (~/.zshrc):
 
 ```bash
-# 1. Clonar repo
-git clone https://github.com/daniel-carreon/saas-factory-setup.git
-cd saas-factory-setup
+# SaaS Factory - De idea a producción en minutos
+alias saas-factory="cp [RUTA]/CLAUDE.md . && cp -r [RUTA]/.claude . && cp [RUTA]/.mcp.json ."
+```
 
-# 2. Ir a tu proyecto
-cd ~/mi-nuevo-proyecto
+### Para bash (~/.bashrc):
 
-# 3. Copiar el setup que quieras
-cp -r ../saas-factory-setup/nextjs-claude-setup/{CLAUDE.md,.claude,.mcp.json,.gitignore,README.md} .
+```bash
+# SaaS Factory - De idea a producción en minutos
+alias saas-factory="cp [RUTA]/CLAUDE.md . && cp -r [RUTA]/.claude . && cp [RUTA]/.mcp.json ."
+```
 
-# 4. Abrir en Claude Code
-claude-code .
+**Nota:** Reemplaza `[RUTA]` con la ruta absoluta donde clonaste este repositorio.
+
+Después ejecuta:
+```bash
+source ~/.zshrc  # o ~/.bashrc
 ```
 
 ---
 
-## 📚 Siguiente Paso: Crear tu Primera App
+## 📋 Workflow Típico
 
-Una vez configurado, sigue la guía del README específico de tu setup:
+### 1. Crear nuevo proyecto
 
-### Para Next.js (Frontend):
-Lee `nextjs-claude-setup/README.md` - Incluye:
-- Setup de Supabase
-- Creación de features
-- Testing
-- Deploy a Vercel
+```bash
+mkdir mi-saas && cd mi-saas
+saas-factory
+claude .
+```
 
-### Para Python (Full-Stack):
-Lee `python-claude-setup/README.md` - Incluye:
-- Setup de frontend + backend
-- Integración end-to-end
-- Testing ambos lados
-- Deploy frontend (Vercel) + backend (Railway)
+### 2. Definir el negocio
 
----
+```
+/new-app
+```
 
-## 🎨 Casos de Uso Reales
+Responde las preguntas del Consultor de Negocio. Genera `BUSINESS_LOGIC.md`.
 
-**¿Qué puedes construir con esto?**
+### 3. Construir
 
-✅ Dashboards financieros
-✅ Sistemas de gestión (CRM, ERP)
-✅ Apps con autenticación
-✅ APIs RESTful
-✅ Aplicaciones con base de datos
-✅ SaaS completos
-✅ Landing pages con backend
-✅ Automatizaciones con UI
+```
+Implementa las features según BUSINESS_LOGIC.md
+```
 
-**Todo con IA haciendo el 90% del trabajo.**
+La IA sigue la metodología SaaS Factory automáticamente.
 
----
+### 4. Crear landing (opcional)
 
-## ❓ Preguntas Frecuentes
+```
+/landing
+```
 
-**P: ¿Necesito saber programar?**
-R: No. Claude Code genera el código por ti. Solo necesitas describir lo que quieres.
-
-**P: ¿Qué es Claude Code?**
-R: Es el editor de código oficial de Anthropic (creadores de Claude). La IA está integrada directamente.
-
-**P: ¿Esto funciona en Windows/Mac/Linux?**
-R: Sí, funciona en los 3 sistemas operativos.
-
-**P: ¿Cuánto cuesta?**
-R: Claude Code tiene planes gratis y de pago. Los templates de SaaS Factory son 100% gratis.
-
-**P: ¿Puedo modificar los templates?**
-R: ¡Sí! Están diseñados para ser personalizados. El `CLAUDE.md` te guía cómo.
-
-**P: ¿Qué pasa si no tengo Supabase?**
-R: Puedes usar PostgreSQL local o cualquier otra base de datos. Los templates son flexibles.
+Para cada cliente o producto que necesite landing page.
 
 ---
 
-## 🤝 Soporte y Comunidad
+## 🎨 Filosofía
 
-**¿Necesitas ayuda?**
-1. Abre el proyecto en Claude Code
-2. Pregúntale directamente: "Tengo este problema: [describe tu problema]"
-3. Claude Code leerá el `CLAUDE.md` y te ayudará
+### Henry Ford
+> "Pueden tener el coche del color que quieran, siempre que sea negro."
 
-**Para issues o sugerencias:**
-- GitHub Issues: [github.com/daniel-carreon/saas-factory-setup/issues](https://github.com/daniel-carreon/saas-factory-setup/issues)
+**Un solo stack perfeccionado** en lugar de mil opciones que paralizan.
+
+### Elon Musk
+> "La máquina que construye la máquina es más importante que la máquina."
+
+**Los comandos que construyen el SaaS** son más importantes que el SaaS mismo.
+
+---
+
+## ❓ FAQ
+
+**¿Por qué solo Next.js?**
+Porque hace el 100% del trabajo. No necesitas Python ni backends separados para el 90% de los SaaS B2B.
+
+**¿Y si necesito backend complejo?**
+Next.js API Routes + Supabase Edge Functions cubren casi todo. Si realmente necesitas más, siempre puedes añadir después.
+
+**¿Por qué Email/Password en lugar de Google OAuth?**
+Para evitar bloqueos de bots durante testing. Google OAuth requiere verificación que complica el desarrollo.
+
+**¿Puedo modificar los templates?**
+Sí. Todo está diseñado para ser personalizado. El `CLAUDE.md` es tu punto de entrada.
+
+---
+
+## 🤝 Contribuir
+
+¿Ideas para mejorar SaaS Factory?
+
+1. Abre un issue con tu propuesta
+2. Fork y PR son bienvenidos
+3. Mantén la filosofía: **simplicidad radical**
 
 ---
 
 ## 📖 Documentación Adicional
 
-- **CLAUDE.md** (en cada setup) - System prompt completo
-- **.claude/prompts/bucle-agentico.md** - Metodología de resolución de problemas
-- **.claude/PRPs/templates/prp_base.md** - Template para features complejas
-- **.claude/skills/SKILLS_README.md** - Guía de skills de Anthropic
+- `.claude/prompts/metodologia-saas-factory.md` - La metodología completa
+- `.claude/commands/new-app.md` - Cómo funciona el arquitecto
+- `.claude/commands/landing.md` - Cómo funciona el generador de landings
 
 ---
 
-## 🎯 Filosofía del Proyecto
+**SaaS Factory V2** | *"De la idea a producción en minutos, no en meses."*
 
-**SaaS Factory** está diseñado con un principio simple:
-
-> "La IA debe hacer el trabajo técnico. Tú solo debes describir lo que quieres."
-
-Por eso:
-- ✅ System prompts optimizados para Claude Code
-- ✅ Arquitecturas que la IA entiende fácilmente
-- ✅ Comandos que automatizan tareas complejas
-- ✅ Templates que funcionan de inmediato
-
-**No necesitas ser experto. Solo necesitas tener claridad de lo que quieres construir.**
-
----
-
-**SaaS Factory v1.0** | Built for AI-first development 🤖
-
-*"De la idea a producción en minutos, no en meses."*
+```
+        ┌─────────────────────────────────────┐
+        │                                     │
+        │   saas-factory  →  /new-app  →  🚀  │
+        │                                     │
+        └─────────────────────────────────────┘
+```

@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2025-12-05
+
+### 🎯 Philosophy Change: "The Machine that Builds the Machine"
+
+V2 adopts Henry Ford's assembly line philosophy - one perfected model instead of many options.
+
+### Added
+- **`/new-app` command**: Business Architect - interactive interview that generates `BUSINESS_LOGIC.md`
+- **`/landing` command**: The Money Maker - high-conversion landing page generator
+- **`metodologia-saas-factory.md`**: Complete SaaS Factory methodology (Delimitar → Deconstruir → Planificar → Ejecutar → Validar)
+- **Golden Path stack**: Single optimized path (Next.js 15 + Supabase + Tailwind + shadcn/ui)
+
+### Changed
+- **Renamed `nextjs-claude-setup/` → `saas-factory/`**: Cleaner naming for the only template
+- **Simplified alias**: `saas-factory` now copies from unified template
+- **Email/Password auth by default**: Avoids OAuth bot-blocking during testing
+
+### Removed
+- **`python-claude-setup/`**: Unnecessary for SaaS factory (Next.js covers full-stack)
+- **`auth-nextjs-template/`**: Auth now injected by agents, not as separate template
+- **`setup/`**: Users use the Golden Path directly
+- **Multiple template options**: One path, perfected
+
+### Technical
+- Repository renamed to `saas-factory-v2`
+- Private repo for controlled distribution
+
+---
+
 ## [1.3.1] - 2025-12-01
 
 ### Added
