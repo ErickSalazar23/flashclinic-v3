@@ -17,7 +17,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@vercel/next-devtools-mcp@latest"
+        "next-devtools-mcp@latest"
       ]
     },
     "supabase": {
