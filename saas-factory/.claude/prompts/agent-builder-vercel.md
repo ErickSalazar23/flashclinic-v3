@@ -1,162 +1,221 @@
-# Construir Agentes con Vercel AI SDK
+# Construir Agentes con Vercel AI SDK v5
 
-Guía para construir agentes IA con Vercel AI SDK + OpenRouter en frontend Next.js.
+Guia para construir agentes IA con Vercel AI SDK v5 + OpenRouter en frontend Next.js 16.
+
+> **IMPORTANTE**: Este prompt esta actualizado para AI SDK v5 (ai@5.x). Las APIs cambiaron significativamente desde v4.
 
 ---
 
-## Cuándo Usar
+## Cuando Usar
 
 - Frontend Next.js con interfaz de chat
 - Necesitas respuestas en streaming con SSE
 - Quieres llamadas a herramientas con tipos seguros en TypeScript
-- Cambiar entre múltiples proveedores de IA
+- Cambiar entre multiples proveedores de IA
 
 ---
 
-## Inicio Rápido
+## Inicio Rapido
 
-### Instalación
+### Instalacion
 
 ```bash
-npm install ai @openrouter/ai-sdk-provider zod
+npm install ai@latest @ai-sdk/react @openrouter/ai-sdk-provider zod
 ```
 
 ### Variables de Entorno
 
 ```env
 OPENROUTER_API_KEY=sk-or-v1-...
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ---
 
-## Backend: Manejador de Rutas
+## Backend: API Route (SDK v5)
 
 ```typescript
 // app/api/chat/route.ts
-import { OpenRouter } from '@openrouter/ai-sdk-provider';
-import { streamText } from 'ai';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider'
+import { streamText, convertToModelMessages, type UIMessage } from 'ai'
 
-const openrouter = new OpenRouter({
+const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
-});
+})
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages }: { messages: UIMessage[] } = await req.json()
+
+  // IMPORTANTE: Convertir UIMessage[] a ModelMessage[]
+  const modelMessages = convertToModelMessages(messages)
 
   const result = streamText({
-    model: openrouter('openai/gpt-4o'),
-    system: 'You are a helpful assistant',
-    messages,
-  });
+    model: openrouter('anthropic/claude-3-5-sonnet'),
+    system: 'Eres un asistente util',
+    messages: modelMessages,
+  })
 
-  return result.toDataStreamResponse();
+  // IMPORTANTE: Usar toUIMessageStreamResponse() para SDK v5
+  return result.toUIMessageStreamResponse()
 }
 ```
 
+### Cambios Clave en v5
+
+| v4 (antiguo) | v5 (actual) |
+|--------------|-------------|
+| `OpenRouter` class | `createOpenRouter()` function |
+| `messages` directo | `convertToModelMessages(messages)` |
+| `toDataStreamResponse()` | `toUIMessageStreamResponse()` |
+| `import { useChat } from 'ai/react'` | `import { useChat } from '@ai-sdk/react'` |
+
 ---
 
-## Frontend: Hook useChat
+## Frontend: Hook useChat (SDK v5)
 
 ```typescript
-'use client';
+'use client'
 
-import { useChat } from 'ai/react';
+import { useState, FormEvent } from 'react'
+import { useChat } from '@ai-sdk/react'
 
-export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat();
+export function ChatWidget() {
+  // IMPORTANTE: En v5, el input se maneja externamente
+  const { messages, status, error, sendMessage } = useChat()
+  const [input, setInput] = useState('')
+
+  const isLoading = status === 'submitted' || status === 'streaming'
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    if (!input.trim() || isLoading) return
+
+    const text = input.trim()
+    setInput('')
+    // IMPORTANTE: sendMessage espera un objeto { text: string }
+    sendMessage({ text })
+  }
+
+  // Helper para extraer texto de message.parts
+  const getMessageContent = (message: typeof messages[0]): string => {
+    if (!message.parts) return ''
+    return message.parts
+      .filter((part): part is { type: 'text'; text: string } => part.type === 'text')
+      .map(part => part.text)
+      .join('')
+  }
 
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 overflow-y-auto p-4">
         {messages.map((m) => (
-          <div
-            key={m.id}
-            className={m.role === 'user' ? 'text-right' : 'text-left'}
-          >
-            <div className="inline-block p-3 rounded-lg">{m.content}</div>
+          <div key={m.id} className={m.role === 'user' ? 'text-right' : 'text-left'}>
+            <div className="inline-block p-3 rounded-lg">
+              {getMessageContent(m)}
+            </div>
           </div>
         ))}
       </div>
 
       <form onSubmit={handleSubmit} className="p-4 border-t">
         <input
+          type="text"
           value={input}
-          onChange={handleInputChange}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Escribe un mensaje..."
           disabled={isLoading}
           className="w-full px-4 py-2 border rounded"
         />
       </form>
     </div>
-  );
+  )
 }
 ```
 
+### Cambios en useChat v5
+
+| v4 (antiguo) | v5 (actual) |
+|--------------|-------------|
+| `input` del hook | `useState` externo |
+| `handleInputChange` | `onChange={(e) => setInput(e.target.value)}` |
+| `handleSubmit` | Custom con `sendMessage({ text })` |
+| `isLoading` | `status === 'submitted' \|\| status === 'streaming'` |
+| `message.content` | `message.parts.filter(p => p.type === 'text')` |
+
 ---
 
-## Llamadas a Herramientas
+## Llamadas a Herramientas (Tools)
 
 ```typescript
-import { z } from 'zod';
-import { tool } from 'ai';
+import { z } from 'zod'
+import { tool } from 'ai'
 
 const tools = {
-  generateImage: tool({
-    description: 'Genera imágenes usando IA',
+  calcularMateriales: tool({
+    description: 'Calcula materiales necesarios para construccion',
     parameters: z.object({
-      prompt: z.string().describe('Descripción de la imagen'),
-      numImages: z.number().min(1).max(10).default(1),
+      area: z.number().describe('Area en metros cuadrados'),
+      tipo: z.string().describe('Tipo de trabajo: pared, piso, techo'),
     }),
-    execute: async ({ prompt, numImages }) => {
-      const images = await generateImages(prompt, numImages);
-      return { images };
+    execute: async ({ area, tipo }) => {
+      // Logica de calculo
+      return { materiales: [...], costo: 1000 }
     },
   }),
-};
+}
 
-// En el manejador de rutas
+// En el API route
 const result = streamText({
-  model: openrouter('openai/gpt-4o'),
-  messages,
+  model: openrouter('anthropic/claude-3-5-sonnet'),
+  messages: modelMessages,
   tools,
-  maxSteps: 5, // Habilita bucle agéntico
-});
+  maxSteps: 5, // Habilita bucle agentico
+})
 ```
 
 ---
 
-## Configuración Multi-Proveedor
+## Configuracion Multi-Proveedor
 
 ```typescript
-import { OpenRouter } from '@openrouter/ai-sdk-provider';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 
-const openrouter = new OpenRouter({
+const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
-});
+})
 
-// Cambiar modelos fácilmente
-const gpt4 = openrouter('openai/gpt-4o');
-const claude = openrouter('anthropic/claude-3-5-sonnet');
-const gemini = openrouter('google/gemini-2.0-flash-exp');
+// Cambiar modelos facilmente
+const claude = openrouter('anthropic/claude-3-5-sonnet')
+const gpt4 = openrouter('openai/gpt-4o')
+const gemini = openrouter('google/gemini-2.0-flash-exp')
 ```
 
 ---
 
-## Mejores Prácticas
+## Matriz de Niveles de IA
 
-1. **Seguridad de Tipos**: Usar Zod para parámetros de herramientas
-2. **Error Boundaries**: Envolver interfaz de chat en ErrorBoundary
-3. **Estados de Carga**: Mostrar UI de carga durante streaming
-4. **Resultados de Herramientas**: Mostrar ejecuciones de herramientas al usuario
-5. **Límites de Tasa**: Implementar rate limits en rutas de API
-6. **Gestión de Contexto**: Limitar historial de mensajes para evitar desbordamiento de tokens
+| Nivel | Patron | Cuando Usar |
+|-------|--------|-------------|
+| 1 | `generateText()` | Background jobs, sin UI |
+| 2 | `streamText()` + `useChat()` | Chat interactivo basico |
+| 3 | `streamText()` + `tools` | Agente que ejecuta acciones |
+| 4 | `Agent` class | Workflows autonomos complejos |
+| 5 | Multi-agente | Orquestacion de agentes especializados |
+
+---
+
+## Mejores Practicas
+
+1. **Siempre convertir mensajes**: `convertToModelMessages(messages)` antes de `streamText`
+2. **Usar UIMessageStreamResponse**: Para compatibilidad con `useChat` v5
+3. **Input externo**: Manejar estado de input fuera del hook
+4. **Message parts**: Los mensajes tienen `.parts[]`, no `.content`
+5. **Status check**: Usar `status` en lugar de `isLoading`
+6. **Error handling**: El hook expone `error` directamente
 
 ---
 
 ## Recursos
 
-- [Documentación Vercel AI SDK](https://sdk.vercel.ai)
-- [Proveedor OpenRouter](https://github.com/OpenRouterTeam/ai-sdk-provider)
-- [Guía de Llamadas a Herramientas](https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling)
+- [Documentacion Vercel AI SDK v5](https://sdk.vercel.ai)
+- [Guia de Migracion v4 a v5](https://sdk.vercel.ai/docs/migration-guides)
+- [OpenRouter Provider](https://github.com/OpenRouterTeam/ai-sdk-provider)
