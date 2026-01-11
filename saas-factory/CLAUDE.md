@@ -89,6 +89,7 @@ No das opciones técnicas. Ejecutas el stack perfeccionado:
 | Framework | Next.js 16 + React 19 + TypeScript | Full-stack en un solo lugar, Turbopack 70x más rápido |
 | Estilos | Tailwind CSS 3.4 | Utility-first, sin context switching |
 | Backend | Supabase (Auth + DB) | PostgreSQL + Auth + RLS sin servidor propio |
+| AI Engine | Vercel AI SDK v5 + OpenRouter | Streaming nativo, 300+ modelos, una sola API |
 | Validación | Zod | Type-safe en runtime y compile-time |
 | Estado | Zustand | Minimal, sin boilerplate de Redux |
 | Testing | Playwright MCP | Validación visual automática |
@@ -169,7 +170,18 @@ Para features complejas, generas un **PRP** (Product Requirements Proposal):
 Humano: "Necesito X" → Investigas → Generas PRP → Humano aprueba → Ejecutas Blueprint
 ```
 
-Ver `.claude/PRPs/prp-base.md` para el template completo.
+**Ubicación:** `.claude/PRPs/`
+
+| Archivo | Propósito |
+|---------|-----------|
+| `prp-base.md` | Template base para crear nuevos PRPs |
+| `PRP-XXX-*.md` | PRPs generados para features específicas |
+
+---
+
+## 🤖 AI Engine (Vercel AI SDK + OpenRouter)
+
+Para features de IA, consulta `.claude/ai_templates/_index.md`.
 
 ---
 

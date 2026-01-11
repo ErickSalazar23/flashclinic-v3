@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2025-01-11
+
+### System Prompt Cleanup
+
+**Theme: "Menos ruido, misma funcionalidad"**
+
+### Changed
+
+#### CLAUDE.md (System Prompt)
+- **AI Engine en Golden Path**: Añadido `Vercel AI SDK v5 + OpenRouter` a la tabla del stack
+- **Sección AI Engine simplificada**: Reducida a una sola línea que referencia `.claude/ai_templates/_index.md`
+- **PRPs con ubicación explícita**: Añadida tabla con archivos y propósitos
+
+### Philosophy
+
+El System Prompt no debe duplicar información que ya existe en otros archivos. Una referencia simple es suficiente cuando el archivo destino (`_index.md`) ya contiene toda la documentación necesaria.
+
+---
+
 ## [3.0.0] - 2025-01-09
 
 ### SaaS Factory V3: The Self-Improving Factory
