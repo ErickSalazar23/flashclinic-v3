@@ -14,13 +14,13 @@
 
 ### Elon Musk
 
-> *"La máquina que construye la máquina es más importante que la máquina."*
+> *"La máquina que construye la máquina es más importante que el producto."*
 
 **El proceso > El producto.** Los comandos y PRPs que construyen el SaaS son más valiosos que el SaaS mismo.
 
 > *"Si no estás fallando, no estás innovando lo suficiente."*
 
-**Self-Annealing.** Cada error documentado fortalece el sistema. El mismo error NUNCA ocurre dos veces.
+**Auto-Blindaje.** Cada error es un impacto que refuerza el proceso. Blindamos la fábrica para que el mismo error NUNCA ocurra dos veces.
 
 > *"El mejor proceso es ningún proceso. El segundo mejor es uno que puedas eliminar."*
 
@@ -45,15 +45,16 @@ Piensa en este repositorio como una **fábrica automatizada de software**:
 | **Eyes/Cameras** | Tu visión del producto | Playwright MCP |
 | **Quality Control** | Validación automática | Next.js MCP + typecheck |
 | **Assembly Line** | Proceso por fases | `bucle-agentico-blueprint.md` |
-| **Neural Network** | Aprendizaje continuo | Self-Annealing |
+| **Neural Network** | Aprendizaje continuo | Auto-Blindaje |
+| **Asset Library** | Biblioteca de Activos | `.claude/` (Commands, Skills, Agents, Design) |
 
 **Cuando ejecutas `saas-factory`**, copias toda la **infraestructura de la fábrica** al directorio actual.
 
 ---
 
-## 🧠 V3: El Sistema que Mejora Solo (Self-Annealing)
+## 🧠 V3: El Sistema que se Fortalece Solo (Auto-Blindaje)
 
-> *"En metalurgia, el annealing fortalece el metal. En software, los errores fortalecen el sistema."*
+> *"Inspirado en el acero del Cybertruck: los errores refuerzan nuestra estructura. Blindamos el proceso para que la falla nunca se repita."*
 
 ### Cómo Funciona
 
@@ -63,7 +64,7 @@ Error ocurre → Se arregla → Se DOCUMENTA → NUNCA ocurre de nuevo
 
 ### Archivos Participantes
 
-| Archivo | Rol en Self-Annealing |
+| Archivo | Rol en Auto-Blindaje |
 |---------|----------------------|
 | `PRP actual` | Documenta errores específicos de esta feature |
 | `.claude/prompts/*.md` | Errores que aplican a múltiples features |
@@ -192,7 +193,7 @@ Ver `.claude/prompts/bucle-agentico-blueprint.md` para el proceso completo:
 1. **Delimitar** → Dividir en FASES (sin subtareas)
 2. **Mapear** → Explorar contexto REAL antes de cada fase
 3. **Ejecutar** → Subtareas con MCPs según juicio
-4. **Self-Anneal** → Documentar errores
+4. **Auto-Blindaje** → Documentar errores y blindar proceso
 5. **Transicionar** → Siguiente fase con contexto actualizado
 
 ---
@@ -306,7 +307,7 @@ test('should calculate total with tax', () => {
 
 ---
 
-## 🔥 Aprendizajes (Self-Annealing Activo)
+## 🔥 Aprendizajes (Auto-Blindaje Activo)
 
 > Esta sección CRECE con cada error encontrado.
 

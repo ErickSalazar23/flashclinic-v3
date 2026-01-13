@@ -9,7 +9,7 @@
 **Filosofía V3:**
 - **Henry Ford:** Un solo modelo "T" perfeccionado → Un solo stack (Golden Path)
 - **Elon Musk:** La máquina que construye la máquina → Los comandos que construyen el SaaS
-- **Self-Annealing:** El sistema que mejora solo → Cada error documentado fortalece la fábrica
+- **Auto-Blindaje:** El sistema se fortalece solo → Cada error es una oportunidad para blindar la fábrica
 
 ## 🤖 La Analogía: Tesla Factory
 
@@ -22,7 +22,8 @@
 | **Eyes/Cameras** | Visión del producto | Playwright MCP |
 | **Quality Control** | Validación automática | Next.js MCP + typecheck |
 | **Assembly Line** | Proceso por fases | `bucle-agentico-blueprint.md` |
-| **Neural Network** | Aprendizaje continuo | Self-Annealing |
+| **Neural Network** | Aprendizaje continuo | Auto-Blindaje |
+| **Asset Library** | Biblioteca de Activos | `.claude/` (Comandos, Skills, Agentes, Diseño) |
 
 ## 📦 Estructura del Repositorio
 
@@ -81,9 +82,9 @@ Copia **TODO el proyecto funcional** al directorio actual:
 | Testing | Playwright MCP |
 | Deploy | Vercel |
 
-## 🧠 V3: Self-Annealing
+## 🧠 V3: Auto-Blindaje
 
-> *"En metalurgia, el annealing fortalece el metal. En software, los errores fortalecen el sistema."*
+> *"Como el acero del Cybertruck: cada error es un impacto que refuerza nuestra estructura. Blindamos el proceso para que la falla nunca se repita."*
 
 ```
 Error ocurre → Se arregla → Se DOCUMENTA → NUNCA ocurre de nuevo
@@ -150,7 +151,7 @@ Comandos disponibles:
 
 **V3 incluye:**
 - Factory OS con analogía Tesla Factory
-- Sistema Self-Annealing (aprendizaje continuo)
+- Sistema Auto-Blindaje (aprendizaje continuo)
 - AI Templates (sistema LEGO modular)
 - Lifecycle commands (/update-sf, /eject-sf)
 

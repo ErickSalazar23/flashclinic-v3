@@ -126,7 +126,7 @@ GENERAR subtareas de Fase 2
 │       • 🗄️ Supabase → Consultar/modificar DB                │
 │                                                             │
 │    4. Validar resultado                                     │
-│       • Si hay error → SELF-ANNEAL (ver paso 3.5)           │
+│       • Si hay error → AUTO-BLINDAJE (ver paso 3.5)           │
 │       • Si está bien → Marcar completed                     │
 │                                                             │
 │    5. Siguiente subtarea                                    │
@@ -137,9 +137,9 @@ GENERAR subtareas de Fase 2
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                                                             │
-│  PASO 3.5: SELF-ANNEALING (cuando hay errores)              │
+│  PASO 3.5: AUTO-BLINDAJE (cuando hay errores)              │
 │                                                             │
-│  El sistema MEJORA con cada error. Cuando algo falla:       │
+│  El sistema se BLINDA con cada error. Cuando algo falla:       │
 │                                                             │
 │  1. ARREGLA el código                                       │
 │  2. TESTEA que funcione                                     │
@@ -445,18 +445,18 @@ Antes de transicionar a siguiente fase:
 
 ---
 
-## 🔥 Self-Annealing: El Sistema que Mejora Solo
+## 🔥 Auto-Blindaje: El Sistema que se Fortalece Solo
 
-> *"En metalurgia, el annealing fortalece el metal. En software, los errores fortalecen el sistema."*
+> *"Inspirado en el acero del Cybertruck: cada error es un impacto que refuerza nuestra estructura. Blindamos el proceso para que la falla nunca se repita."*
 
-### Por Qué Self-Annealing
+### Por Qué Auto-Blindaje
 
-Sin Self-Annealing:
+Sin Auto-Blindaje:
 ```
 Error ocurre → Se arregla → Se olvida → Error ocurre de nuevo
 ```
 
-Con Self-Annealing:
+Con Auto-Blindaje:
 ```
 Error ocurre → Se arregla → Se documenta → NUNCA ocurre de nuevo
 ```
@@ -500,4 +500,4 @@ Error ocurre → Se arregla → Se documenta → NUNCA ocurre de nuevo
 ---
 
 *"La precisión viene de mapear la realidad, no de imaginar el futuro."*
-*"El sistema que aprende de sus errores es invencible."*
+*"El sistema que se blinda solo es invencible."*

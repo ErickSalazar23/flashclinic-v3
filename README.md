@@ -19,7 +19,7 @@ Piensa en este repositorio como una **fábrica automatizada de software**:
 | **Eyes/Cameras** | Playwright MCP | Valida UI visualmente |
 | **Quality Control** | Next.js MCP + typecheck | Detecta errores en tiempo real |
 | **Assembly Line** | `bucle-agentico-blueprint.md` | Proceso por fases |
-| **Neural Network** | Self-Annealing | Aprende de errores (nunca se repiten) |
+| **Neural Network** | Auto-Blindaje | Aprende de errores (nunca se repiten) |
 
 **Cuando ejecutas `saas-factory`**, copias toda la **infraestructura de la fábrica** al directorio actual.
 
@@ -27,7 +27,7 @@ Piensa en este repositorio como una **fábrica automatizada de software**:
 
 ## 🧠 V3: El Sistema que Mejora Solo
 
-> *"En metalurgia, el annealing fortalece el metal. En software, los errores fortalecen el sistema."*
+> *"Como el acero del Cybertruck: cada error es un impacto que refuerza nuestra estructura. Blindamos el proceso para que la falla nunca se repita."*
 
 ```
 Error ocurre → Se arregla → Se DOCUMENTA → NUNCA ocurre de nuevo
@@ -226,7 +226,7 @@ Para detalles técnicos, ver:
         │                                                         │
         │   saas-factory  →  /new-app  →  build  →  🚀           │
         │                                                         │
-        │   El sistema que mejora solo (Self-Annealing)           │
+        │   El sistema que se blinda solo (Auto-Blindaje)           │
         │                                                         │
         └─────────────────────────────────────────────────────────┘
 ```

@@ -23,11 +23,11 @@ El System Prompt no debe duplicar información que ya existe en otros archivos. 
 
 ## [3.0.0] - 2025-01-09
 
-### SaaS Factory V3: The Self-Improving Factory
+### SaaS Factory V3: The Self-Hardening Factory
 
 **Theme: "La Tesla Factory aplicada al software"**
 
-V3 introduce la analogía de la Tesla Factory y el sistema Self-Annealing que hace que la fábrica mejore con cada error.
+V3 introduce la analogía de la Tesla Factory y el sistema Auto-Blindaje que hace que la fábrica se fortalezca con cada error.
 
 ### Added
 
@@ -43,9 +43,9 @@ Nueva metáfora que unifica todo el sistema:
 | **Eyes/Cameras** | Visión del producto | Playwright MCP |
 | **Quality Control** | Validación automática | Next.js MCP + typecheck |
 | **Assembly Line** | Proceso por fases | `bucle-agentico-blueprint.md` |
-| **Neural Network** | Aprendizaje continuo | Self-Annealing |
+| **Neural Network** | Aprendizaje continuo | Auto-Blindaje |
 
-#### Self-Annealing System
+#### Auto-Blindaje System
 Sistema que hace que la fábrica mejore con cada error:
 ```
 Error ocurre → Se arregla → Se DOCUMENTA → NUNCA ocurre de nuevo
@@ -64,7 +64,7 @@ Nueva sección activa que crece con cada error encontrado.
 #### CLAUDE.md & GEMINI.md (Complete Rewrite)
 - Reducido de 435 a ~280 líneas (más enfocado)
 - Añadida analogía Tesla Factory prominente
-- Añadida sección Self-Annealing con archivos participantes
+- Añadida sección Auto-Blindaje con archivos participantes
 - Principios KISS/YAGNI/DRY/SOLID ahora como "Reglas de Código"
 - Eliminado ejemplo de Python (era confuso en proyecto TypeScript)
 - Sección "Aprendizajes" activa al final
@@ -88,11 +88,11 @@ Nueva sección activa que crece con cada error encontrado.
 
 **V3 representa un cambio fundamental:**
 - V2: Sistema de comandos inteligentes
-- V3: **Fábrica que se mejora sola**
+- V3: **Fábrica que se blinda sola**
 
-La clave es el Self-Annealing: cada error documentado fortalece la fábrica para que el mismo error NUNCA ocurra de nuevo.
+La clave es el Auto-Blindaje: cada error documentado refuerza la estructura para que el mismo error NUNCA ocurra de nuevo.
 
-*"En metalurgia, el annealing fortalece el metal. En software, los errores fortalecen el sistema."*
+*"Como el acero del Cybertruck: cada error es un impacto que refuerza nuestra estructura. Blindamos el proceso para que la falla nunca se repita."*
 
 ---
 
