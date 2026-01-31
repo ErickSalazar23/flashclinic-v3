@@ -1,0 +1,46 @@
+// Appointments - Type Exports
+export {
+  // Schemas
+  appointmentSchema,
+  appointmentStatusEnum,
+  appointmentPriorityEnum,
+  statusHistoryEntrySchema,
+  priorityOriginEnum,
+  priorityHistoryEntrySchema,
+  createAppointmentSchema,
+  updateAppointmentSchema,
+  requestAppointmentSchema,
+  listAppointmentsQuerySchema,
+  overridePrioritySchema,
+  // Constants
+  VALID_STATUS_TRANSITIONS,
+  TERMINAL_STATUSES,
+  // Functions
+  isValidTransition,
+  isTerminalStatus,
+  createStatusHistoryEntry,
+  daysUntilAppointment,
+  formatStatus,
+  formatPriority,
+  getPriorityColorClass,
+  getStatusColorClass,
+  // Priority history functions
+  createSystemPriorityEntry,
+  createHumanPriorityEntry,
+  countHumanOverrides,
+  getLatestPriorityChange,
+  isHumanOverridden,
+  formatPriorityOrigin,
+  // Types
+  type Appointment,
+  type AppointmentStatus,
+  type AppointmentPriority,
+  type StatusHistoryEntry,
+  type PriorityOrigin,
+  type PriorityHistoryEntry,
+  type CreateAppointmentInput,
+  type UpdateAppointmentInput,
+  type RequestAppointmentInput,
+  type ListAppointmentsQuery,
+  type OverridePriorityInput,
+} from './schemas'

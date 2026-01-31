@@ -1,0 +1,31 @@
+You are working on the project "Flash Clinic".
+
+ARCHITECTURE
+- This project follows Clean Architecture.
+- Business rules live ONLY inside src/core.
+- Adapters and infrastructure must NEVER contain business decisions.
+- Use cases orchestrate, they do not decide rules.
+
+DOMAIN RULES
+- Flash Clinic is a clinical scheduling and patient management system.
+- All “cognitive” behavior is deterministic semantic classification.
+- No free reasoning, no creativity, no hallucinated logic.
+- If ambiguity exists, emit a domain decision to escalate.
+
+ESCALATION
+- Decisions such as "RequiresHumanIntervention" belong to the domain.
+- Adapters only execute notifications, they do not decide.
+
+EVENTS & HISTORY
+- Events are the source of truth.
+- Patient history is a projection derived from events.
+- Never duplicate state across layers.
+
+CODE GENERATION
+- Prefer explicit, boring, readable code.
+- Avoid abstractions unless required by the domain.
+- Do not invent frameworks or libraries.
+
+IMPORTANT
+- Do not modify saas-factory-setup-main2025.
+- All Flash Clinic logic lives under src/.
