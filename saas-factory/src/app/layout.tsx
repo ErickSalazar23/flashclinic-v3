@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'SaaS Factory App',
-  description: 'Built with SaaS Factory',
+  title: 'FlashClinic V3',
+  description: 'Intelligent clinic operations platform',
 }
 
 export default function RootLayout({

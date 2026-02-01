@@ -1,232 +1,178 @@
-# 🏭 SaaS Factory V3 - La Fábrica de Software Inteligente
+# FlashClinic V3
 
-> *"La Tesla Factory aplicada al software."*
+> Intelligent clinic operations platform with automated decision-making and human-in-the-loop oversight.
 
-Sistema de comandos inteligentes que crea aplicaciones **production-ready** con IA.
-
----
-
-## 🤖 La Analogía: Tesla Factory
-
-Piensa en este repositorio como una **fábrica automatizada de software**:
-
-| Componente Tesla | Tu Sistema | Qué Hace |
-|------------------|------------|----------|
-| **Factory OS** | `CLAUDE.md` | Cerebro del agente (identidad y reglas) |
-| **Blueprints** | `.claude/PRPs/*.md` | Especificaciones de features |
-| **Control Room** | Humano | Aprueba PRPs y valida diseño |
-| **Robot Arms** | Supabase MCP + Terminal | Edita código y base de datos |
-| **Eyes/Cameras** | Playwright MCP | Valida UI visualmente |
-| **Quality Control** | Next.js MCP + typecheck | Detecta errores en tiempo real |
-| **Assembly Line** | `bucle-agentico-blueprint.md` | Proceso por fases |
-| **Neural Network** | Auto-Blindaje | Aprende de errores (nunca se repiten) |
-
-**Cuando ejecutas `saas-factory`**, copias toda la **infraestructura de la fábrica** al directorio actual.
+FlashClinic V3 is a production-ready healthcare appointment management system featuring an intelligent decision engine, priority-based workflow automation, and comprehensive audit trails.
 
 ---
 
-## 🧠 V3: El Sistema que Mejora Solo
+## Features
 
-> *"Como el acero del Cybertruck: cada error es un impacto que refuerza nuestra estructura. Blindamos el proceso para que la falla nunca se repita."*
+### Patient Management
+- Patient registration with validation (name, email, phone, birth date)
+- Recurring patient tracking
+- Age-based priority consideration
+
+### Appointment Scheduling
+- Full appointment lifecycle management
+- Six-state workflow: REQUESTED → CONFIRMED → RESCHEDULED → ATTENDED / NO_SHOW / CANCELLED
+- Specialty-based scheduling
+- Priority levels (LOW, MEDIUM, HIGH)
+
+### Decision Engine
+- **Autonomy Levels**: AUTOMATIC, SUPERVISED, BLOCKED
+- **Priority Escalation**: Time-based automatic escalation (7 days LOW→MEDIUM, 14 days MEDIUM→HIGH)
+- **State Machine Validation**: Prevents invalid status transitions
+- **Conflict Detection**: Flags ambiguous or high-risk situations
+
+### Human-in-the-Loop Approvals
+- Pending decisions queue with weight-based prioritization
+- Approve/Reject workflow with required justifications
+- Idempotent operations (safe retries)
+
+### Priority Overrides
+- Manual priority adjustment with audit trail
+- Origin tracking (SYSTEM vs HUMAN)
+- Minimum 10-character justification requirement
+
+### Event-Driven Auditability
+- Domain events for all state changes
+- Complete status and priority history (JSONB)
+- Queryable audit trail via Server Actions
+
+---
+
+## Architecture
 
 ```
-Error ocurre → Se arregla → Se DOCUMENTA → NUNCA ocurre de nuevo
+src/
+├── app/                    # Next.js App Router
+│   ├── (auth)/            # Login, Signup
+│   └── (main)/            # Dashboard, Patients, Appointments, Decisions
+│
+├── features/              # Feature-First Architecture
+│   ├── auth/              # Authentication (Supabase Auth)
+│   ├── patients/          # Patient management
+│   ├── appointments/      # Appointment scheduling + state machine
+│   ├── decisions/         # Decision engine + rules
+│   ├── dashboard/         # Dashboard + navigation
+│   └── events/            # Domain event system
+│
+├── actions/               # Server Actions (Next.js 16)
+│   ├── auth/              # login, signup, logout, getSession
+│   ├── patients/          # CRUD operations
+│   ├── appointments/      # requestAppointment, updateStatus, overridePriority
+│   ├── decisions/         # approveDecision, rejectDecision
+│   └── events/            # Event queries
+│
+├── shared/                # Shared utilities
+│   ├── components/        # ErrorBoundary, LoadingStates
+│   └── lib/               # Supabase client
+│
+└── lib/
+    └── supabase/          # Server + Browser clients
 ```
 
-Cada error encontrado se documenta en el archivo relevante:
-- **PRP actual** → Errores específicos de esta feature
-- **`.claude/prompts/*.md`** → Errores que aplican a múltiples features
-- **`CLAUDE.md`** → Errores críticos que aplican a TODO
+### Tech Stack
 
-**El mismo error NUNCA ocurre dos veces.**
+| Layer | Technology |
+|-------|------------|
+| Framework | Next.js 16 + React 19 + TypeScript |
+| Styling | Tailwind CSS 3.4 |
+| Database | Supabase (PostgreSQL + Auth + RLS) |
+| Validation | Zod |
+| Testing | Vitest (127 tests) |
 
 ---
 
-## 🚀 Instalación (2 minutos)
+## Local Development
 
-### 1. Clona el repositorio
+### Prerequisites
+- Node.js 18+
+- Supabase project (or local Supabase)
+
+### Setup
+
 ```bash
-git clone https://github.com/daniel-carreon/saas-factory-setup.git
-cd saas-factory-setup
-```
+# Clone the repository
+git clone https://github.com/ErickSalazar23/flashclinic-v3.git
+cd flashclinic-v3/saas-factory
 
-### 2. Abre en Claude Code
-```bash
-claude .
-```
-
-### 3. Pídele que configure el alias
-```
-Configura el alias "saas-factory" en mi terminal
-```
-
-Claude Code detecta tu sistema (zsh/bash) y configura todo automáticamente.
-
----
-
-## 📦 ¿Qué Obtienes?
-
-Cuando ejecutas `saas-factory`, obtienes un **proyecto Next.js 16 completo** listo para producción:
-
-```
-tu-proyecto/
-├── CLAUDE.md              # Factory OS - Cerebro del agente
-├── GEMINI.md              # Espejo para Gemini
-├── .mcp.json              # MCPs configurados (Next.js, Playwright, Supabase)
-├── src/                   # App con Feature-First Architecture
-├── .claude/
-│   ├── commands/          # /new-app, /landing, etc.
-│   ├── PRPs/              # Blueprints de features
-│   └── prompts/           # Assembly Line (bucle agéntico)
-└── package.json           # Next.js 16, React 19, Tailwind 3.4
-```
-
-**No es un template vacío. Es production-ready desde el minuto 0.**
-
----
-
-## 🏗️ El Golden Path
-
-**Un solo stack. Sin decisiones innecesarias.**
-
-| Capa | Tecnología |
-|------|------------|
-| Frontend | Next.js 16 + React 19 + TypeScript |
-| Estilos | Tailwind CSS 3.4 + shadcn/ui |
-| Backend | Supabase (Auth + Database) |
-| Testing | Playwright MCP |
-| Deploy | Vercel |
-
----
-
-## 🔥 El Cyborg - 3 MCPs Trabajando Juntos
-
-```typescript
-// next.config.ts - Esta línea lo cambia todo
-experimental: { mcpServer: true }
-```
-
-| MCP | Rol (Analogía) | Superpoder |
-|-----|----------------|------------|
-| 🧠 **Next.js DevTools** | Quality Control | Lee errores/logs en tiempo real vía `/_next/mcp` |
-| 👁️ **Playwright** | Eyes/Cameras | Captura screenshots, valida UX visualmente |
-| 🖐️ **Supabase** | Robot Arms | Ejecuta SQL, migraciones, consulta logs |
-
-**Sin MCPs:** La IA adivina qué está roto.
-**Con MCPs:** La IA **ve** exactamente qué está roto y por qué.
-
----
-
-## 🛠️ Comandos Disponibles
-
-### `/new-app` - El Arquitecto
-Actúa como **Consultor de Negocio Senior**. Te entrevista y genera `BUSINESS_LOGIC.md` con la especificación técnica completa.
-
-### `/landing` - The Money Maker
-Actúa como **Copywriter + Diseñador**. Crea landing pages de alta conversión validadas visualmente con Playwright.
-
----
-
-## 📋 Workflow: De 0 a Producción
-
-### 1. Crear proyecto
-```bash
-mkdir mi-saas && cd mi-saas
-saas-factory
-```
-
-### 2. Instalar y configurar
-```bash
+# Install dependencies
 npm install
-cp .env.example .env.local  # Añade credenciales de Supabase
-```
 
-### 3. Prender el MCP
-```bash
+# Configure environment
+cp .env.example .env.local
+# Add your Supabase credentials to .env.local
+
+# Run database migrations
+# (Apply migrations from supabase/migrations/ to your Supabase project)
+
+# Start development server
 npm run dev
-# Output: - MCP Server: http://localhost:3000/_next/mcp ✓
 ```
 
-### 4. Conectar Claude Code
+### Environment Variables
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Available Scripts
+
 ```bash
-claude .  # En otra terminal
+npm run dev          # Start development server (Turbopack)
+npm run build        # Production build
+npm run start        # Start production server
+npm run lint         # ESLint
+npm run test         # Run tests (Vitest)
+npm run test:run     # Run tests once
+npm run test:coverage # Run tests with coverage
 ```
-
-### 5. Definir el negocio
-```
-/new-app
-```
-
-Responde las preguntas. El agente genera `BUSINESS_LOGIC.md`.
-
-### 6. Construir
-```
-Implementa las features según BUSINESS_LOGIC.md
-```
-
-La IA usa el MCP para ver errores en tiempo real mientras construye.
 
 ---
 
-## 🧪 ¿Cómo Saber que el MCP Funciona?
+## Database Schema
 
-**Prueba:** Rompe algo a propósito
-```typescript
-// src/app/page.tsx
-const broken = undefined.foo  // 💥
-```
+Six migrations define the complete schema:
 
-**Con MCP activo**, Claude ve:
-```
-TypeError: Cannot read property 'foo' of undefined
-  at Home (page.tsx:2:23)
-```
+1. **001_flashclinic_schema** - Core tables (patients, appointments, pending_decisions, domain_events)
+2. **002_patient_fields** - Patient validation constraints
+3. **003_appointment_fields** - Appointment scheduling fields
+4. **004_appointment_state_machine** - Status enum expansion + history tracking
+5. **005_pending_decisions_resolution** - Decision resolution workflow
+6. **006_priority_override** - Priority history with origin tracking
 
-**Sin MCP**, Claude adivina.
+All tables have Row Level Security (RLS) enabled.
 
 ---
 
-## ❓ FAQ
+## Documentation
 
-**¿Por qué solo Next.js?**
-Hace el 100% del trabajo para el 95% de los SaaS B2B. No necesitas Python ni backends separados.
-
-**¿Por qué Email/Password en lugar de OAuth?**
-Evita bloqueos de bots durante testing. OAuth requiere verificación que complica el desarrollo.
-
-**¿Puedo personalizar?**
-Sí. Todo está diseñado para ser extendido. `CLAUDE.md` es tu punto de entrada.
+- [Decision Engine Guide](saas-factory/docs/DECISION_ENGINE.md) - How the automated decision system works
 
 ---
 
-## 🤝 Contribuir
-
-1. Abre un issue con tu propuesta
-2. Fork y PR son bienvenidos
-3. Mantén la filosofía: **simplicidad radical**
-
----
-
-## 📖 Documentación
-
-Para detalles técnicos, ver:
-- `saas-factory/CLAUDE.md` - Factory OS (cerebro del agente)
-- `.claude/PRPs/prp-base.md` - Sistema de Blueprints
-- `.claude/prompts/bucle-agentico-blueprint.md` - Assembly Line
-- `.claude/commands/` - Cómo funcionan los comandos
-
----
-
-**SaaS Factory V3** | *"De la idea a producción en minutos, no en meses."*
+## Test Coverage
 
 ```
-        ┌─────────────────────────────────────────────────────────┐
-        │                                                         │
-        │   🏭 SAAS FACTORY V3                                    │
-        │                                                         │
-        │   saas-factory  →  /new-app  →  build  →  🚀           │
-        │                                                         │
-        │   El sistema que se blinda solo (Auto-Blindaje)           │
-        │                                                         │
-        └─────────────────────────────────────────────────────────┘
+127 tests passing across 7 test files:
+- State machine transitions (40 tests)
+- Decision flow integration (21 tests)
+- Idempotency guarantees (19 tests)
+- Decision engine (12 tests)
+- Evaluator logic (20 tests)
+- Priority escalation rules (9 tests)
+- Status transition rules (6 tests)
 ```
+
+---
+
+## License
+
+MIT
+
+---
+
+*FlashClinic V3 - Intelligent clinic operations, production-ready.*

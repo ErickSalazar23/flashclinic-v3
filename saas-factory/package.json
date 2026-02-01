@@ -1,6 +1,7 @@
 {
-  "name": "saas-factory-app",
-  "version": "0.1.0",
+  "name": "flashclinic-v3",
+  "version": "1.0.0",
+  "description": "FlashClinic V3 - Intelligent clinic operations platform",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
