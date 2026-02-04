@@ -9,11 +9,124 @@
 class Store {
   constructor() {
     this.storageKey = 'flashclinic_crm_data';
+    this.config = typeof window !== 'undefined' && window.FLASH_CONFIG ? window.FLASH_CONFIG : { USE_SUPABASE: false };
     this.state = this.loadState();
     this.listeners = [];
     
     // Initialize diagnostic engine
     this.diagnosticEngine = new DiagnosticEngine(this.state.settings);
+
+    // Initialize Supabase if enabled
+    this.supabase = null;
+    if (this.config.USE_SUPABASE && typeof supabase !== 'undefined') {
+      this.supabase = supabase.createClient(this.config.SUPABASE_URL, this.config.SUPABASE_ANON_KEY);
+      this.initSupabaseSync();
+    }
+  }
+
+  /**
+   * Initialize Supabase Synchronization and Real-time
+   */
+  async initSupabaseSync() {
+    if (!this.supabase) return;
+    
+    console.log('🚀 Supabase mode ACTIVE. Syncing with live database...');
+    
+    // 1. Initial Sync
+    await this.syncFromSupabase();
+    
+    // 2. Setup Real-time
+    this.supabase
+      .channel('crm_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'crm_prospects' }, (payload) => {
+        console.log('🔄 Real-time change received:', payload);
+        this.handleRemoteChange(payload);
+      })
+      .subscribe();
+  }
+  
+  /**
+   * Sync complete state from Supabase
+   */
+  async syncFromSupabase() {
+    if (!this.supabase) return;
+    
+    try {
+      const { data: prospects, error } = await this.supabase
+        .from('crm_prospects')
+        .select(`
+          *,
+          crm_diagnostics(
+            perdida_anual,
+            perdida_no_show,
+            costo_oportunidad,
+            silla_vacia_percentage,
+            rentabilidad_percentage,
+            severity_score,
+            severity,
+            diagnostic_text,
+            headline,
+            recommendations
+          )
+        `)
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
+      
+      if (prospects) {
+        this.state.prospects = prospects.map(p => {
+          const prospect = new Prospect({
+            id: p.id,
+            doctorName: p.doctor_name,
+            clinicName: p.clinic_name,
+            specialty: p.specialty,
+            email: p.email,
+            phone: p.phone,
+            citasSemanales: p.citas_semanales,
+            ticketPromedio: p.ticket_promedio,
+            noShowPercentage: p.no_show_percentage,
+            slotsDisponibles: p.slots_disponibles,
+            stage: p.stage,
+            dealValue: p.deal_value,
+            ltv: p.ltv,
+            createdAt: p.created_at,
+            updatedAt: p.updated_at
+          });
+          
+          if (p.crm_diagnostics && p.crm_diagnostics[0]) {
+            const d = p.crm_diagnostics[0];
+            prospect.diagnostic = {
+              perdidaAnual: d.perdida_anual,
+              perdidaNoShow: d.perdida_no_show,
+              costoOportunidad: d.costo_oportunidad,
+              sillaVaciaPercentage: d.silla_vacia_percentage,
+              rentabilidadPercentage: d.rentabilidad_percentage,
+              severityScore: d.severity_score,
+              severity: d.severity,
+              diagnosticText: d.diagnostic_text,
+              headline: d.headline,
+              recommendations: d.recommendations
+            };
+          }
+          
+          return prospect;
+        });
+        
+        this.updateMetadata();
+        this.saveState(); // Save to local cache
+        console.log(`✅ Synced ${prospects.length} prospects from live database.`);
+        this.notifyListeners();
+      }
+    } catch (error) {
+      console.error('❌ Error syncing from Supabase:', error);
+    }
+  }
+
+  /**
+   * Handle remote changes from realtime channel
+   */
+  async handleRemoteChange(payload) {
+    await this.syncFromSupabase();
   }
   
   /**
@@ -127,6 +240,9 @@ class Store {
     this.state.prospects.push(prospect);
     this.updateMetadata();
     this.saveState();
+
+    // Sync to Supabase if enabled
+    this.syncProspectToRemote(prospect);
     
     return prospect;
   }
@@ -185,6 +301,9 @@ class Store {
     
     this.updateMetadata();
     this.saveState();
+
+    // Sync to Supabase
+    this.syncProspectToRemote(prospect);
     
     return prospect;
   }
@@ -192,7 +311,7 @@ class Store {
   /**
    * Delete prospect
    */
-  deleteProspect(id) {
+  async deleteProspect(id) {
     const index = this.state.prospects.findIndex(p => p.id === id);
     if (index === -1) {
       throw new Error(`Prospect not found: ${id}`);
@@ -201,6 +320,12 @@ class Store {
     const deleted = this.state.prospects.splice(index, 1)[0];
     this.updateMetadata();
     this.saveState();
+
+    // Delete from Supabase
+    if (this.supabase) {
+      const { error } = await this.supabase.from('crm_prospects').delete().eq('id', id);
+      if (error) console.error('Error deleting from remote:', error);
+    }
     
     return deleted;
   }
@@ -217,6 +342,9 @@ class Store {
     prospect.moveToStage(newStage);
     this.updateMetadata();
     this.saveState();
+
+    // Sync to Supabase
+    this.syncProspectToRemote(prospect);
     
     return prospect;
   }
@@ -462,6 +590,61 @@ class Store {
    */
   getMetadata() {
     return { ...this.state.metadata };
+  }
+
+  /**
+   * Sync prospect to Supabase
+   */
+  async syncProspectToRemote(prospect) {
+    if (!this.supabase) return;
+    
+    try {
+      const dbProspect = {
+        doctor_name: prospect.doctorName,
+        clinic_name: prospect.clinicName,
+        specialty: prospect.specialty,
+        email: prospect.email,
+        phone: prospect.phone,
+        citas_semanales: prospect.citasSemanales,
+        ticket_promedio: prospect.ticketPromedio,
+        no_show_percentage: prospect.noShowPercentage,
+        slots_disponibles: prospect.slotsDisponibles,
+        stage: prospect.stage,
+        deal_value: prospect.dealValue,
+        ltv: prospect.ltv,
+        updated_at: new Date().toISOString()
+      };
+
+      // Upsert prospect
+      const { error: prospectError } = await this.supabase
+        .from('crm_prospects')
+        .upsert({ id: prospect.id, ...dbProspect });
+
+      if (prospectError) throw prospectError;
+
+      // Sync diagnostic if exists
+      if (prospect.diagnostic) {
+        const dbDiagnostic = {
+          prospect_id: prospect.id,
+          perdida_anual: prospect.diagnostic.perdidaAnual,
+          perdida_no_show: prospect.diagnostic.perdidaNoShow,
+          costo_oportunidad: prospect.diagnostic.costoOportunidad,
+          silla_vacia_percentage: prospect.diagnostic.sillaVaciaPercentage,
+          rentabilidad_percentage: prospect.diagnostic.rentabilidadPercentage,
+          severity_score: prospect.diagnostic.severityScore,
+          severity: prospect.diagnostic.severity,
+          diagnostic_text: prospect.diagnostic.diagnosticText,
+          headline: prospect.diagnostic.headline,
+          recommendations: prospect.diagnostic.recommendations
+        };
+
+        await this.supabase.from('crm_diagnostics').upsert(dbDiagnostic, { onConflict: 'prospect_id' });
+      }
+
+      console.log('✅ Synchronized to remote database');
+    } catch (error) {
+      console.error('❌ Error syncing to remote database:', error);
+    }
   }
 }
 

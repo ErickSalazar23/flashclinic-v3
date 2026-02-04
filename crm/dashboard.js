@@ -13,20 +13,46 @@ let severityChart = null;
 // Initialize dashboard on load
 document.addEventListener('DOMContentLoaded', () => {
     initializeDashboard();
+    
+    // Subscribe to store changes (including Supabase syncs)
+    store.subscribe(() => {
+        console.log('🔔 Store state changed. Re-rendering dashboard...');
+        refreshDashboard(true);
+    });
 });
 
 /**
  * Main initialization function
  */
 function initializeDashboard() {
+    updateConnectionStatus();
     renderKPIs();
     renderCharts();
     renderPipeline();
     
-    // Auto-refresh every 30 seconds
+    // Auto-refresh every 30 seconds for safety
     setInterval(() => {
-        refreshDashboard();
+        refreshDashboard(false);
     }, 30000);
+}
+
+/**
+ * Update Connection Status UI
+ */
+function updateConnectionStatus() {
+    const statusEl = document.getElementById('connectionStatus');
+    const dotEl = statusEl.querySelector('.status-dot');
+    const textEl = statusEl.querySelector('.status-text');
+    
+    if (store.supabase) {
+        statusEl.classList.add('online');
+        statusEl.classList.remove('offline');
+        textEl.textContent = 'ENTERPRISE LIVE';
+    } else {
+        statusEl.classList.remove('online');
+        statusEl.classList.add('offline');
+        textEl.textContent = 'LOCAL MODE';
+    }
 }
 
 /**
@@ -48,51 +74,51 @@ function renderKPIs() {
     
     const kpis = [
         {
-            title: 'Total Prospectos',
+            title: 'Clínicas Sangrando Dinero',
             value: totalProspects,
-            icon: '👥',
-            iconBg: 'rgba(0, 210, 255, 0.2)',
-            change: '+12%',
+            icon: '🩸',
+            iconBg: 'rgba(255, 71, 87, 0.2)',
+            change: '+12% este mes',
             changeType: 'positive'
         },
         {
-            title: 'Casos Críticos',
+            title: 'Emergencias Financieras',
             value: criticalProspects,
             icon: '🚨',
-            iconBg: 'rgba(255, 71, 87, 0.2)',
-            change: '-5%',
-            changeType: 'positive'
+            iconBg: 'rgba(255, 71, 87, 0.3)',
+            change: 'Requieren acción YA',
+            changeType: 'negative'
         },
         {
-            title: 'Pérdida Total Anual',
+            title: 'Dinero Perdido (Anual)',
             value: formatCurrency(stats.totalPerdidaAnual),
-            icon: '💰',
+            icon: '💸',
             iconBg: 'rgba(255, 193, 7, 0.2)',
-            change: stats.totalPerdidaAnual > 0 ? 'Oportunidad' : 'N/A',
+            change: stats.totalPerdidaAnual > 0 ? 'Recuperable' : 'N/A',
             changeType: 'neutral'
         },
         {
-            title: 'Tasa de Conversión',
+            title: 'Clínicas Recuperadas',
             value: `${conversionRate}%`,
-            icon: '📈',
+            icon: '💊',
             iconBg: 'rgba(0, 255, 136, 0.2)',
-            change: '+3.2%',
+            change: '+3.2% vs mes anterior',
             changeType: 'positive'
         },
         {
-            title: 'LTV Pipeline',
+            title: 'Valor Total en Juego',
             value: formatCurrency(totalLTV),
             icon: '💎',
             iconBg: 'rgba(138, 43, 226, 0.2)',
-            change: '+18%',
+            change: '+18% crecimiento',
             changeType: 'positive'
         },
         {
-            title: 'Deals Cerrados',
+            title: 'Clínicas Salvadas',
             value: closedDeals,
             icon: '✅',
             iconBg: 'rgba(0, 255, 136, 0.2)',
-            change: `${conversionRate}% del total`,
+            change: `${conversionRate}% de éxito`,
             changeType: 'neutral'
         }
     ];
@@ -133,10 +159,10 @@ function renderPipelineChart() {
     }
     
     const stageLabels = {
-        'agenda_detenida': 'Agenda Detenida',
-        'diagnostico_proceso': 'En Diagnóstico',
-        'tratamiento_activo': 'Tratamiento Activo',
-        'recuperacion_exitosa': 'Recuperación Exitosa'
+        'agenda_detenida': 'Hemorragia Activa 🩸',
+        'diagnostico_proceso': 'Evaluando Daño 🔬',
+        'tratamiento_activo': 'En Recuperación 💊',
+        'recuperacion_exitosa': 'Clínica Salvada ✅'
     };
     
     const data = {
@@ -211,10 +237,10 @@ function renderSeverityChart() {
     }
     
     const severityLabels = {
-        'critical': 'Crítico',
-        'severe': 'Severo',
-        'moderate': 'Moderado',
-        'stable': 'Estable'
+        'critical': 'Emergencia 🚨',
+        'severe': 'Crítico 🔥',
+        'moderate': 'Estable ⚠️',
+        'stable': 'Saludable ✅'
     };
     
     const data = {
@@ -285,10 +311,10 @@ function renderSeverityChart() {
 function renderPipeline() {
     const prospects = store.getAllProspects();
     const stages = [
-        { id: 'agenda_detenida', title: 'Agenda Detenida', icon: '🚨' },
-        { id: 'diagnostico_proceso', title: 'En Diagnóstico', icon: '🔬' },
-        { id: 'tratamiento_activo', title: 'Tratamiento Activo', icon: '💊' },
-        { id: 'recuperacion_exitosa', title: 'Recuperación Exitosa', icon: '✅' }
+        { id: 'agenda_detenida', title: 'Hemorragia Activa', icon: '🩸' },
+        { id: 'diagnostico_proceso', title: 'Evaluando Daño', icon: '🔬' },
+        { id: 'tratamiento_activo', title: 'En Recuperación', icon: '💊' },
+        { id: 'recuperacion_exitosa', title: 'Clínica Salvada', icon: '✅' }
     ];
     
     const pipelineGrid = document.getElementById('pipelineGrid');
@@ -310,7 +336,7 @@ function renderPipeline() {
                         : `
                             <div class="empty-state">
                                 <div class="empty-state-icon">📭</div>
-                                <p>No hay prospectos en esta etapa</p>
+                                <p>Ninguna clínica en esta fase</p>
                             </div>
                         `
                     }
@@ -340,19 +366,19 @@ function renderProspectCard(prospect) {
             </div>
             <div class="prospect-metrics">
                 <div class="metric-item">
-                    <div class="metric-label">Pérdida Anual</div>
+                    <div class="metric-label">💸 Sangrado Anual</div>
                     <div class="metric-value">${formatCurrency(diagnostic.perdidaAnual || 0)}</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-label">No-Show</div>
+                    <div class="metric-label">👻 Pacientes Fantasma</div>
                     <div class="metric-value">${prospect.noShowPercentage || 0}%</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-label">Citas/Semana</div>
+                    <div class="metric-label">📅 Citas/Semana</div>
                     <div class="metric-value">${prospect.citasSemanales || 0}</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-label">Capacidad</div>
+                    <div class="metric-label">⚡ Capacidad Usada</div>
                     <div class="metric-value">${diagnostic.rentabilidadPercentage || 0}%</div>
                 </div>
             </div>
@@ -388,9 +414,10 @@ function formatCurrency(amount) {
 /**
  * Action Handlers
  */
-function refreshDashboard() {
+function refreshDashboard(skipCharts = false) {
+    updateConnectionStatus();
     renderKPIs();
-    renderCharts();
+    if (!skipCharts) renderCharts();
     renderPipeline();
 }
 

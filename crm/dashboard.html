@@ -396,6 +396,42 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Connection Status */
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #8892a6;
+        }
+
+        .connection-status.online .status-dot {
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        .connection-status.offline .status-dot {
+            background: #ff4757;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .pipeline-grid {
@@ -422,10 +458,14 @@
                 <div class="logo-icon">⚡</div>
                 <div class="logo-text">
                     <h1>Flash Clinic CRM</h1>
-                    <p>Sistema de Adquisición de Clínicas</p>
+                    <p>Detén la Hemorragia de Ingresos. Convierte Cada Contacto en Paciente.</p>
                 </div>
             </div>
             <div class="header-actions">
+                <div id="connectionStatus" class="connection-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Local Mode</span>
+                </div>
                 <button class="btn btn-secondary" onclick="window.location.href='test-store-runner.html'">
                     🧪 Tests
                 </button>
@@ -447,8 +487,8 @@
         <div class="charts-section">
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3 class="chart-title">Pipeline de Conversión</h3>
-                    <p class="chart-subtitle">Distribución de prospectos por etapa</p>
+                    <h3 class="chart-title">¿Dónde Están Tus Clínicas?</h3>
+                    <p class="chart-subtitle">Del caos financiero a la recuperación total</p>
                 </div>
                 <div class="chart-container">
                     <canvas id="pipelineChart"></canvas>
@@ -457,8 +497,8 @@
 
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3 class="chart-title">Severidad de Casos</h3>
-                    <p class="chart-subtitle">Clasificación por nivel de urgencia</p>
+                    <h3 class="chart-title">Nivel de Urgencia</h3>
+                    <p class="chart-subtitle">¿Cuántas clínicas están en emergencia financiera?</p>
                 </div>
                 <div class="chart-container">
                     <canvas id="severityChart"></canvas>
@@ -469,7 +509,7 @@
         <!-- Pipeline -->
         <div class="pipeline-section">
             <div class="section-header">
-                <h2 class="section-title">Pipeline de Prospectos</h2>
+                <h2 class="section-title">Tu Pipeline de Rescate</h2>
                 <div>
                     <button class="btn btn-secondary" onclick="refreshPipeline()">
                         🔄 Actualizar
@@ -483,6 +523,8 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script src="data-models.js"></script>
     <script src="diagnostic-engine.js"></script>
     <script src="store.js"></script>
