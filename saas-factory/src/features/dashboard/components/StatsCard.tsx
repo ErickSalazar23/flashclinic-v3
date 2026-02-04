@@ -1,61 +1,129 @@
 import type { ReactNode } from 'react'
+import { TrendingUp, TrendingDown, type LucideIcon } from 'lucide-react'
 
 // ============================================
 // Stats Card Component
 // ============================================
+
+type ColorVariant = 'default' | 'success' | 'warning' | 'danger' | 'info'
 
 interface StatsCardProps {
   title: string
   value: string | number
   description?: string
   icon?: ReactNode
+  IconComponent?: LucideIcon
   trend?: {
     value: number
     isPositive: boolean
   }
+  color?: ColorVariant
 }
 
-export function StatsCard({ title, value, description, icon, trend }: StatsCardProps) {
+const colorConfig: Record<ColorVariant, { icon: string; text: string; bg: string }> = {
+  default: {
+    icon: 'text-surface-400',
+    text: 'text-white',
+    bg: 'bg-surface-800',
+  },
+  success: {
+    icon: 'text-green-500',
+    text: 'text-green-500',
+    bg: 'bg-green-500/10',
+  },
+  warning: {
+    icon: 'text-flash-500',
+    text: 'text-flash-500',
+    bg: 'bg-flash-500/10',
+  },
+  danger: {
+    icon: 'text-red-500',
+    text: 'text-red-500',
+    bg: 'bg-red-500/10',
+  },
+  info: {
+    icon: 'text-blue-500',
+    text: 'text-blue-500',
+    bg: 'bg-blue-500/10',
+  },
+}
+
+export function StatsCard({
+  title,
+  value,
+  description,
+  icon,
+  IconComponent,
+  trend,
+  color = 'default',
+}: StatsCardProps) {
+  const colors = colorConfig[color]
+
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="mt-1 text-3xl font-semibold text-gray-900">{value}</p>
+    <div className="group relative overflow-hidden rounded-2xl border border-surface-800 bg-surface-900/40 p-5 transition-all hover:border-surface-700 hover:bg-surface-900/60">
+      {/* Header with icon */}
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 text-surface-500 mb-2">
+            {IconComponent && <IconComponent className={`w-4 h-4 ${colors.icon}`} />}
+            <span className="text-xs font-bold uppercase tracking-wider">{title}</span>
+          </div>
+          <div className={`text-2xl font-black ${color === 'default' ? 'text-white' : colors.text}`}>
+            {value}
+            {trend && (
+              <span
+                className={`ml-2 text-xs font-medium ${
+                  trend.isPositive ? 'text-green-500' : 'text-red-500'
+                }`}
+              >
+                {trend.isPositive ? '+' : ''}
+                {trend.value}%
+              </span>
+            )}
+          </div>
           {description && (
-            <p className="mt-1 text-sm text-gray-500">{description}</p>
-          )}
-          {trend && (
-            <p
-              className={`mt-2 flex items-center text-sm ${
-                trend.isPositive ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {trend.isPositive ? (
-                <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
-              {Math.abs(trend.value)}%
-            </p>
+            <p className="mt-1 text-xs text-surface-500">{description}</p>
           )}
         </div>
-        {icon && (
-          <div className="rounded-full bg-blue-50 p-3 text-blue-600">{icon}</div>
+
+        {/* Legacy icon support */}
+        {icon && !IconComponent && (
+          <div className={`rounded-xl ${colors.bg} p-3 ${colors.icon}`}>
+            {icon}
+          </div>
         )}
       </div>
+
+      {/* Trend indicator */}
+      {trend && (
+        <div
+          className={`mt-3 flex items-center gap-1 text-xs font-medium ${
+            trend.isPositive ? 'text-green-500' : 'text-red-500'
+          }`}
+        >
+          {trend.isPositive ? (
+            <TrendingUp className="h-3 w-3" />
+          ) : (
+            <TrendingDown className="h-3 w-3" />
+          )}
+          <span>vs. mes anterior</span>
+        </div>
+      )}
+
+      {/* Decorative gradient */}
+      <div
+        className={`absolute -right-8 -top-8 h-24 w-24 rounded-full opacity-20 blur-2xl transition-opacity group-hover:opacity-30 ${
+          color === 'danger'
+            ? 'bg-red-500'
+            : color === 'warning'
+              ? 'bg-flash-500'
+              : color === 'success'
+                ? 'bg-green-500'
+                : color === 'info'
+                  ? 'bg-blue-500'
+                  : 'bg-surface-600'
+        }`}
+      />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { logout } from '@/actions/auth'
+import { LogOut, ChevronDown } from 'lucide-react'
 
 // ============================================
 // User Menu Component
@@ -14,7 +15,7 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
-  const displayName = user.fullName || user.email || 'User'
+  const displayName = user.fullName || user.email || 'Usuario'
   const initials = displayName
     .split(' ')
     .map((n) => n[0])
@@ -27,27 +28,29 @@ export function UserMenu({ user }: UserMenuProps) {
   }
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-3">
       {/* User info */}
       <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-medium text-white">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-flash-500/20 text-sm font-bold text-flash-500 border border-flash-500/30">
           {initials}
         </div>
         <div className="hidden sm:block">
-          <p className="text-sm font-medium text-gray-900">{displayName}</p>
+          <p className="text-sm font-semibold text-surface-200">{displayName}</p>
           {user.fullName && user.email && (
-            <p className="text-xs text-gray-500">{user.email}</p>
+            <p className="text-xs text-surface-500">{user.email}</p>
           )}
         </div>
+        <ChevronDown className="h-4 w-4 text-surface-500 hidden sm:block" />
       </div>
 
       {/* Logout button */}
       <form action={handleLogout}>
         <button
           type="submit"
-          className="rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+          className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-surface-400 hover:bg-surface-800 hover:text-red-400 transition-colors"
         >
-          Logout
+          <LogOut className="h-4 w-4" />
+          <span className="hidden sm:inline">Salir</span>
         </button>
       </form>
     </div>

@@ -6,7 +6,7 @@ export default function MainLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-surface-950">
       {/* Sidebar */}
       <Sidebar />
 
@@ -16,7 +16,7 @@ export default function MainLayout({
         <Header />
 
         {/* Page content */}
-        <main className="flex-1 overflow-auto bg-gray-50 p-6">{children}</main>
+        <main className="flex-1 overflow-auto bg-surface-950 p-6">{children}</main>
       </div>
     </div>
   )

@@ -1,5 +1,8 @@
 // Shared Components - Exports
 
+// Icons (from lucide-react)
+export * from './Icons'
+
 // Error Handling
 export {
   ErrorBoundary,
