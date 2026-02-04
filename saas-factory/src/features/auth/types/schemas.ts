@@ -58,3 +58,25 @@ export const sessionSchema = z.object({
 })
 
 export type Session = z.infer<typeof sessionSchema>
+
+/**
+ * Forgot password schema (request reset email).
+ */
+export const forgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email address'),
+})
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>
+
+/**
+ * Reset password schema (set new password).
+ */
+export const resetPasswordSchema = z.object({
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ['confirmPassword'],
+})
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
