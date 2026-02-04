@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core System Demo | Flash Clinic CRM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+      color: #e0e6ed;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid rgba(0, 210, 255, 0.2);
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #00d2ff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+      color: #8892a6;
+      font-weight: 300;
+    }
+    
+    .demo-section {
+      background: rgba(26, 31, 53, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 210, 255, 0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+      color: #00d2ff;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #00d2ff 0%, #0099cc 100%);
+      border: none;
+      border-radius: 8px;
+      color: #0a0e1a;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 210, 255, 0.4);
+    }
+    
+    .output {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      background: rgba(10, 14, 26, 0.8);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .success {
+      color: #00ff88;
+    }
+    
+    .warning {
+      color: #ffaa00;
+    }
+    
+    .error {
+      color: #ff0055;
+    }
+    
+    .info {
+      color: #00d2ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔬 Core System Demonstration</h1>
+      <p class="subtitle">Validación del Sistema Lógico sin UI | Flash Clinic CRM</p>
+    </header>
+    
+    <!-- Demo 1: Create Prospects -->
+    <div class="demo-section">
+      <h2>1️⃣ Crear Prospectos con Diagnóstico Automático</h2>
+      <button class="btn" onclick="demo1_createProspects()">Crear 3 Prospectos</button>
+      <button class="btn" onclick="demo1_showAll()">Mostrar Todos</button>
+      <div id="demo1Output" class="output"></div>
+    </div>
+    
+    <!-- Demo 2: Pipeline Management -->
+    <div class="demo-section">
+      <h2>2️⃣ Gestión de Pipeline</h2>
+      <button class="btn" onclick="demo2_moveProspects()">Mover Prospectos por Pipeline</button>
+      <button class="btn" onclick="demo2_showStats()">Ver Estadísticas</button>
+      <div id="demo2Output" class="output"></div>
+    </div>
+    
+    <!-- Demo 3: Diagnostic Analysis -->
+    <div class="demo-section">
+      <h2>3️⃣ Análisis de Diagnóstico</h2>
+      <button class="btn" onclick="demo3_showCritical()">Ver Casos Críticos</button>
+      <button class="btn" onclick="demo3_showOpportunities()">Top Oportunidades</button>
+      <div id="demo3Output" class="output"></div>
+    </div>
+    
+    <!-- Demo 4: Data Persistence -->
+    <div class="demo-section">
+      <h2>4️⃣ Persistencia de Datos</h2>
+      <button class="btn" onclick="demo4_export()">Exportar Datos</button>
+      <button class="btn" onclick="demo4_reload()">Simular Recarga (Reload)</button>
+      <button class="btn" onclick="demo4_clear()">⚠️ Limpiar Todo</button>
+      <div id="demo4Output" class="output"></div>
+    </div>
+    
+    <!-- Console Output -->
+    <div class="demo-section">
+      <h2>📊 Estado del Sistema</h2>
+      <div id="systemStatus" class="output"></div>
+    </div>
+  </div>
+  
+  <!-- Load Core System -->
+  <script src="data-models.js"></script>
+  <script src="diagnostic-engine.js"></script>
+  <script src="store.js"></script>
+  
+  <!-- Demo Scripts -->
+  <script>
+    // Update system status on load
+    updateSystemStatus();
+    
+    function updateSystemStatus() {
+      const stats = store.getPipelineStats();
+      const metadata = store.getMetadata();
+      
+      const output = `
+<span class="info">═══════════════════════════════════════════════════════════</span>
+<span class="success">✓ Sistema Inicializado Correctamente</span>
+
+<span class="info">📊 ESTADO ACTUAL:</span>
+  Total Prospectos: ${stats.total}
+  - Agenda Detenida: ${stats.byStage.agenda_detenida}
+  - Diagnóstico en Proceso: ${stats.byStage.diagnostico_proceso}
+  - Tratamiento Aplicado: ${stats.byStage.tratamiento_aplicado}
+  - Recuperación Exitosa: ${stats.byStage.recuperacion_exitosa}
+
+<span class="info">🩺 SEVERIDAD:</span>
+  - Crítico: ${stats.bySeverity.critical}
+  - Severo: ${stats.bySeverity.severe}
+  - Moderado: ${stats.bySeverity.moderate}
+  - Estable: ${stats.bySeverity.stable}
+
+<span class="info">💰 FINANCIERO:</span>
+  Pérdida Anual Total: ${formatCurrency(stats.totalPerdidaAnual)}
+  LTV Total: ${formatCurrency(stats.totalLTV)}
+
+<span class="info">📅 METADATA:</span>
+  Última Modificación: ${new Date(metadata.lastModified).toLocaleString('es-CO')}
+  Versión: ${metadata.version}
+<span class="info">═══════════════════════════════════════════════════════════</span>
+      `;
+      
+      document.getElementById('systemStatus').innerHTML = output;
+    }
+    
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(amount);
+    }
+    
+    // ========================================================================
+    // DEMO 1: Create Prospects
+    // ========================================================================
+    
+    function demo1_createProspects() {
+      const output = document.getElementById('demo1Output');
+      output.innerHTML = '<span class="info">Creando prospectos...</span>\n\n';
+      
+      const prospects = [
+        {
+          doctorName: 'Dr. Juan Pérez',
+          specialty: 'Cardiología',
+          clinicName: 'Clínica del Corazón',
+          email: 'juan.perez@example.com',
+          phone: '+57 300 123 4567',
+          city: 'Bogotá',
+          citasSemanales: 15,
+          ticketPromedio: 200000,
+          noShowPercentage: 35,
+          slotsDisponibles: 50,
+          horasConsulta: 40
+        },
+        {
+          doctorName: 'Dr. María García',
+          specialty: 'Dermatología',
+          clinicName: 'DermaCare',
+          email: 'maria.garcia@example.com',
+          phone: '+57 301 234 5678',
+          city: 'Medellín',
+          citasSemanales: 30,
+          ticketPromedio: 180000,
+          noShowPercentage: 20,
+          slotsDisponibles: 45,
+          horasConsulta: 35
+        },
+        {
+          doctorName: 'Dr. Carlos López',
+          specialty: 'Ortopedia',
+          clinicName: 'OrthoClinic',
+          email: 'carlos.lopez@example.com',
+          phone: '+57 302 345 6789',
+          city: 'Cali',
+          citasSemanales: 38,
+          ticketPromedio: 220000,
+          noShowPercentage: 8,
+          slotsDisponibles: 40,
+          horasConsulta: 32
+        }
+      ];
+      
+      prospects.forEach(data => {
+        const prospect = store.createProspect(data);
+        const severity = prospect.diagnostic.severity.toUpperCase();
+        const severityClass = 
+          severity === 'CRITICAL' ? 'error' :
+          severity === 'SEVERE' ? 'warning' :
+          severity === 'MODERATE' ? 'info' : 'success';
+        
+        output.innerHTML += `
+<span class="success">✓ Creado: ${prospect.doctorName}</span>
+  ID: ${prospect.id}
+  Especialidad: ${prospect.specialty}
+  Severidad: <span class="${severityClass}">${severity}</span>
+  Pérdida Anual: ${formatCurrency(prospect.diagnostic.perdidaAnual)}
+  Silla Vacía: ${prospect.diagnostic.sillaVaciaPercentage.toFixed(1)}%
+  Rentabilidad: ${prospect.diagnostic.rentabilidadPercentage.toFixed(1)}%
+
+`;
+      });
+      
+      output.innerHTML += '<span class="info">═══════════════════════════════════════════════════════════</span>\n';
+      output.innerHTML += '<span class="success">✓ 3 prospectos creados con diagnóstico automático</span>\n';
+      output.innerHTML += '<span class="info">✓ Datos guardados en localStorage</span>\n';
+      
+      updateSystemStatus();
+    }
+    
+    function demo1_showAll() {
+      const output = document.getElementById('demo1Output');
+      const prospects = store.getAllProspects();
+      
+      if (prospects.length === 0) {
+        output.innerHTML = '<span class="warning">⚠ No hay prospectos. Crea algunos primero.</span>';
+        return;
+      }
+      
+      output.innerHTML = '<span class="info">TODOS LOS PROSPECTOS:</span>\n\n';
+      
+      prospects.forEach((p, i) => {
+        output.innerHTML += `
+<span class="success">${i + 1}. ${p.doctorName}</span>
+   Stage: ${p.getStageLabel()}
+   Diagnóstico: ${p.diagnostic ? p.diagnostic.severity.toUpperCase() : 'N/A'}
+   Creado: ${new Date(p.createdAt).toLocaleString('es-CO')}
+
+`;
+      });
+      
+      updateSystemStatus();
+    }
+    
+    // ========================================================================
+    // DEMO 2: Pipeline Management
+    // ========================================================================
+    
+    function demo2_moveProspects() {
+      const output = document.getElementById('demo2Output');
+      const prospects = store.getAllProspects();
+      
+      if (prospects.length === 0) {
+        output.innerHTML = '<span class="warning">⚠ No hay prospectos. Crea algunos primero.</span>';
+        return;
+      }
+      
+      output.innerHTML = '<span class="info">Moviendo prospectos por el pipeline...</span>\n\n';
+      
+      // Move first prospect to diagnostico_proceso
+      if (prospects[0]) {
+        store.moveProspectToStage(prospects[0].id, 'diagnostico_proceso');
+        output.innerHTML += `<span class="success">✓ ${prospects[0].doctorName} → Diagnóstico en Proceso</span>\n`;
+      }
+      
+      // Move second prospect to tratamiento_aplicado
+      if (prospects[1]) {
+        store.moveProspectToStage(prospects[1].id, 'diagnostico_proceso');
+        store.moveProspectToStage(prospects[1].id, 'tratamiento_aplicado');
+        output.innerHTML += `<span class="success">✓ ${prospects[1].doctorName} → Tratamiento Aplicado</span>\n`;
+      }
+      
+      // Move third prospect to recuperacion_exitosa
+      if (prospects[2]) {
+        store.moveProspectToStage(prospects[2].id, 'diagnostico_proceso');
+        store.moveProspectToStage(prospects[2].id, 'tratamiento_aplicado');
+        store.moveProspectToStage(prospects[2].id, 'recuperacion_exitosa');
+        store.updateProspect(prospects[2].id, { ltv: 15000000 });
+        output.innerHTML += `<span class="success">✓ ${prospects[2].doctorName} → Recuperación Exitosa (LTV: $15M)</span>\n`;
+      }
+      
+      output.innerHTML += '\n<span class="info">✓ Pipeline actualizado</span>\n';
+      
+      updateSystemStatus();
+    }
+    
+    function demo2_showStats() {
+      const output = document.getElementById('demo2Output');
+      const stats = store.getPipelineStats();
+      const funnel = store.getFunnelMetrics();
+      
+      output.innerHTML = `
+<span class="info">═══════════════════════════════════════════════════════════</span>
+<span class="info">📊 ESTADÍSTICAS DEL PIPELINE</span>
+
+<span class="success">Total Prospectos: ${stats.total}</span>
+
+<span class="info">Por Etapa:</span>
+  🔴 Agenda Detenida: ${stats.byStage.agenda_detenida} (${funnel.agenda_detenida ? formatCurrency(funnel.agenda_detenida.totalValue) : '$0'})
+  🟡 Diagnóstico en Proceso: ${stats.byStage.diagnostico_proceso} (${funnel.diagnostico_proceso ? formatCurrency(funnel.diagnostico_proceso.totalValue) : '$0'})
+  🟠 Tratamiento Aplicado: ${stats.byStage.tratamiento_aplicado} (${funnel.tratamiento_aplicado ? formatCurrency(funnel.tratamiento_aplicado.totalValue) : '$0'})
+  🟢 Recuperación Exitosa: ${stats.byStage.recuperacion_exitosa} (${funnel.recuperacion_exitosa ? formatCurrency(funnel.recuperacion_exitosa.totalValue) : '$0'})
+
+<span class="info">Por Severidad:</span>
+  🚨 Crítico: ${stats.bySeverity.critical}
+  ⚠️  Severo: ${stats.bySeverity.severe}
+  ⚡ Moderado: ${stats.bySeverity.moderate}
+  ✓  Estable: ${stats.bySeverity.stable}
+
+<span class="info">Métricas Financieras:</span>
+  Pérdida Anual Total: ${formatCurrency(stats.totalPerdidaAnual)}
+  LTV Total: ${formatCurrency(stats.totalLTV)}
+  Promedio Silla Vacía: ${stats.averageSillaVacia.toFixed(1)}%
+  Promedio Rentabilidad: ${stats.averageRentabilidad.toFixed(1)}%
+<span class="info">═══════════════════════════════════════════════════════════</span>
+      `;
+      
+      updateSystemStatus();
+    }
+    
+    // ========================================================================
+    // DEMO 3: Diagnostic Analysis
+    // ========================================================================
+    
+    function demo3_showCritical() {
+      const output = document.getElementById('demo3Output');
+      const critical = store.getCriticalProspects();
+      
+      if (critical.length === 0) {
+        output.innerHTML = '<span class="success">✓ No hay casos críticos</span>';
+        return;
+      }
+      
+      output.innerHTML = '<span class="error">🚨 CASOS CRÍTICOS DETECTADOS</span>\n\n';
+      
+      critical.forEach(p => {
+        output.innerHTML += `
+<span class="error">⚠️  ${p.doctorName} - ${p.specialty}</span>
+   Pérdida Anual: ${formatCurrency(p.diagnostic.perdidaAnual)}
+   Silla Vacía: ${p.diagnostic.sillaVaciaPercentage.toFixed(1)}%
+   No-Show: ${p.noShowPercentage.toFixed(1)}%
+   Severity Score: ${p.diagnostic.severityScore.toFixed(0)}/100
+
+   <span class="warning">Recomendaciones:</span>
+${p.diagnostic.recommendations.slice(0, 2).map(r => `   - ${r.title} (${r.impact})`).join('\n')}
+
+`;
+      });
+      
+      updateSystemStatus();
+    }
+    
+    function demo3_showOpportunities() {
+      const output = document.getElementById('demo3Output');
+      const opportunities = store.getTopOpportunities(5);
+      
+      if (opportunities.length === 0) {
+        output.innerHTML = '<span class="warning">⚠ No hay oportunidades disponibles</span>';
+        return;
+      }
+      
+      output.innerHTML = '<span class="info">💰 TOP OPORTUNIDADES DE RECUPERACIÓN</span>\n\n';
+      
+      opportunities.forEach((p, i) => {
+        output.innerHTML += `
+<span class="success">${i + 1}. ${p.doctorName}</span>
+   Pérdida Recuperable: ${formatCurrency(p.diagnostic.perdidaAnual)}
+   Stage: ${p.getStageLabel()}
+   Severidad: ${p.diagnostic.severity.toUpperCase()}
+
+`;
+      });
+      
+      updateSystemStatus();
+    }
+    
+    // ========================================================================
+    // DEMO 4: Data Persistence
+    // ========================================================================
+    
+    function demo4_export() {
+      const output = document.getElementById('demo4Output');
+      const data = store.exportData();
+      
+      output.innerHTML = `
+<span class="info">📦 DATOS EXPORTADOS</span>
+
+<span class="success">Exportación exitosa:</span>
+  Prospectos: ${data.prospects.length}
+  Timestamp: ${new Date(data.exportedAt).toLocaleString('es-CO')}
+  
+<span class="info">JSON Preview (primeros 500 caracteres):</span>
+${JSON.stringify(data, null, 2).substring(0, 500)}...
+
+<span class="info">✓ Datos disponibles para backup/migración</span>
+      `;
+      
+      updateSystemStatus();
+    }
+    
+    function demo4_reload() {
+      const output = document.getElementById('demo4Output');
+      
+      output.innerHTML = '<span class="info">🔄 Simulando recarga de página...</span>\n\n';
+      
+      // Create new store instance (simulates page reload)
+      const newStore = new Store();
+      const prospects = newStore.getAllProspects();
+      
+      output.innerHTML += `
+<span class="success">✓ Store recargado desde localStorage</span>
+
+Prospectos recuperados: ${prospects.length}
+
+${prospects.map((p, i) => `
+${i + 1}. ${p.doctorName}
+   Stage: ${p.getStageLabel()}
+   Diagnóstico: ${p.diagnostic ? p.diagnostic.severity : 'N/A'}
+`).join('\n')}
+
+<span class="info">✓ Todos los datos persisten correctamente</span>
+      `;
+      
+      updateSystemStatus();
+    }
+    
+    function demo4_clear() {
+      if (!confirm('⚠️ Esto eliminará TODOS los datos. ¿Estás seguro?')) {
+        return;
+      }
+      
+      const output = document.getElementById('demo4Output');
+      store.clearAllData();
+      
+      output.innerHTML = `
+<span class="warning">⚠️  DATOS ELIMINADOS</span>
+
+<span class="info">✓ localStorage limpiado</span>
+<span class="info">✓ Store reiniciado</span>
+
+<span class="success">Sistema listo para nueva demostración</span>
+      `;
+      
+      updateSystemStatus();
+    }
+  </script>
+</body>
+</html>

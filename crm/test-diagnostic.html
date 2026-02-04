@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test - Motor de Diagnóstico | Flash Clinic CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 100%);
+      color: #e0e6ed;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid rgba(0, 210, 255, 0.2);
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #00d2ff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+      color: #8892a6;
+      font-weight: 300;
+    }
+    
+    .test-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .panel {
+      background: rgba(26, 31, 53, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 210, 255, 0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .panel h2 {
+      font-size: 1.5rem;
+      color: #00d2ff;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      font-size: 0.9rem;
+      color: #8892a6;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(10, 14, 26, 0.8);
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      border-radius: 8px;
+      color: #e0e6ed;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #00d2ff;
+      box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.1);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #00d2ff 0%, #0099cc 100%);
+      border: none;
+      border-radius: 8px;
+      color: #0a0e1a;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 210, 255, 0.4);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .results {
+      grid-column: 1 / -1;
+    }
+    
+    .diagnostic-report {
+      background: rgba(10, 14, 26, 0.8);
+      border-left: 4px solid #00d2ff;
+      padding: 2rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .severity-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    
+    .severity-critical {
+      background: rgba(255, 0, 85, 0.2);
+      color: #ff0055;
+      border: 1px solid #ff0055;
+    }
+    
+    .severity-severe {
+      background: rgba(255, 107, 0, 0.2);
+      color: #ff6b00;
+      border: 1px solid #ff6b00;
+    }
+    
+    .severity-moderate {
+      background: rgba(255, 170, 0, 0.2);
+      color: #ffaa00;
+      border: 1px solid #ffaa00;
+    }
+    
+    .severity-stable {
+      background: rgba(0, 210, 255, 0.2);
+      color: #00d2ff;
+      border: 1px solid #00d2ff;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .metric-card {
+      background: rgba(26, 31, 53, 0.6);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 210, 255, 0.2);
+      text-align: center;
+    }
+    
+    .metric-label {
+      font-size: 0.85rem;
+      color: #8892a6;
+      margin-bottom: 0.5rem;
+    }
+    
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #00d2ff;
+    }
+    
+    .recommendations {
+      margin-top: 2rem;
+    }
+    
+    .recommendation-item {
+      background: rgba(26, 31, 53, 0.4);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border-left: 3px solid #00d2ff;
+    }
+    
+    .recommendation-title {
+      font-weight: 600;
+      color: #00d2ff;
+      margin-bottom: 0.5rem;
+    }
+    
+    .recommendation-description {
+      color: #8892a6;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .recommendation-impact {
+      color: #00ff88;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    
+    @media (max-width: 768px) {
+      .test-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🩺 Motor de Diagnóstico - Test</h1>
+      <p class="subtitle">Enterprise CRM Flash Clinic | Cyber-Medicine Edition</p>
+    </header>
+    
+    <div class="test-grid">
+      <!-- Input Panel -->
+      <div class="panel">
+        <h2>📊 Datos de la Práctica</h2>
+        <form id="diagnosticForm">
+          <div class="form-group">
+            <label for="citasSemanales">Citas Agendadas por Semana</label>
+            <input type="number" id="citasSemanales" value="20" min="0" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="ticketPromedio">Ticket Promedio (COP)</label>
+            <input type="number" id="ticketPromedio" value="150000" min="0" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="noShowPercentage">% de No-Show</label>
+            <input type="number" id="noShowPercentage" value="25" min="0" max="100" step="0.1" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="slotsDisponibles">Slots Disponibles por Semana</label>
+            <input type="number" id="slotsDisponibles" value="40" min="0" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="horasConsulta">Horas de Consulta por Semana</label>
+            <input type="number" id="horasConsulta" value="30" min="0" required>
+          </div>
+          
+          <button type="submit" class="btn">🔬 Ejecutar Diagnóstico</button>
+        </form>
+      </div>
+      
+      <!-- Quick Metrics Panel -->
+      <div class="panel">
+        <h2>⚡ Métricas Rápidas</h2>
+        <div id="quickMetrics">
+          <p style="text-align: center; color: #8892a6; padding: 2rem;">
+            Ingresa los datos y ejecuta el diagnóstico para ver las métricas.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Results Panel -->
+      <div class="panel results">
+        <h2>📋 Reporte de Diagnóstico Completo</h2>
+        <div id="diagnosticResults">
+          <p style="text-align: center; color: #8892a6; padding: 2rem;">
+            El reporte de diagnóstico aparecerá aquí después de ejecutar el análisis.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Recommendations Panel -->
+      <div class="panel results" id="recommendationsPanel" style="display: none;">
+        <h2>💊 Recomendaciones de Tratamiento</h2>
+        <div id="recommendationsList" class="recommendations"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Load Dependencies -->
+  <script src="data-models.js"></script>
+  <script src="diagnostic-engine.js"></script>
+  
+  <!-- Test Script -->
+  <script>
+    // Initialize diagnostic engine
+    const settings = new Settings();
+    const engine = new DiagnosticEngine(settings);
+    
+    // Form submission handler
+    document.getElementById('diagnosticForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Collect form data
+      const metrics = {
+        citasSemanales: parseFloat(document.getElementById('citasSemanales').value),
+        ticketPromedio: parseFloat(document.getElementById('ticketPromedio').value),
+        noShowPercentage: parseFloat(document.getElementById('noShowPercentage').value),
+        slotsDisponibles: parseFloat(document.getElementById('slotsDisponibles').value),
+        horasConsulta: parseFloat(document.getElementById('horasConsulta').value)
+      };
+      
+      // Run diagnostic analysis
+      const diagnostic = engine.analyze(metrics);
+      
+      // Display quick metrics
+      displayQuickMetrics(diagnostic);
+      
+      // Display full diagnostic report
+      displayDiagnosticReport(diagnostic);
+      
+      // Display recommendations
+      displayRecommendations(diagnostic);
+      
+      console.log('Diagnostic Analysis:', diagnostic);
+    });
+    
+    function displayQuickMetrics(diagnostic) {
+      const summary = engine.generateQuickSummary(diagnostic);
+      
+      const html = `
+        <div class="severity-badge severity-${diagnostic.severity}">
+          ${summary.severity} (Score: ${summary.severityScore})
+        </div>
+        
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Pérdida Anual</div>
+            <div class="metric-value" style="font-size: 1.3rem;">${summary.perdidaAnual}</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-label">Silla Vacía</div>
+            <div class="metric-value">${summary.sillaVacia}</div>
+          </div>
+          
+          <div class="metric-card">
+            <div class="metric-label">Rentabilidad</div>
+            <div class="metric-value">${summary.rentabilidad}</div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; padding: 1rem; background: rgba(0, 210, 255, 0.1); border-radius: 8px; border: 1px solid rgba(0, 210, 255, 0.3);">
+          <strong style="color: #00d2ff;">${summary.headline}</strong>
+        </div>
+      `;
+      
+      document.getElementById('quickMetrics').innerHTML = html;
+    }
+    
+    function displayDiagnosticReport(diagnostic) {
+      const html = `
+        <div class="diagnostic-report">
+${diagnostic.diagnosticText}
+        </div>
+      `;
+      
+      document.getElementById('diagnosticResults').innerHTML = html;
+    }
+    
+    function displayRecommendations(diagnostic) {
+      if (diagnostic.recommendations.length === 0) {
+        document.getElementById('recommendationsPanel').style.display = 'none';
+        return;
+      }
+      
+      document.getElementById('recommendationsPanel').style.display = 'block';
+      
+      let html = '';
+      diagnostic.recommendations.forEach(rec => {
+        html += `
+          <div class="recommendation-item">
+            <div class="recommendation-title">
+              ${rec.priority === 'critical' ? '🚨' : rec.priority === 'high' ? '⚠️' : rec.priority === 'medium' ? '⚡' : '💡'} 
+              ${rec.title}
+            </div>
+            <div class="recommendation-description">${rec.description}</div>
+            <div class="recommendation-impact">💰 Impacto: ${rec.impact}</div>
+          </div>
+        `;
+      });
+      
+      document.getElementById('recommendationsList').innerHTML = html;
+    }
+  </script>
+</body>
+</html>
