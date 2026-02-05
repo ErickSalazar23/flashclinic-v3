@@ -3,6 +3,8 @@ import { listDecisions } from '@/actions/decisions'
 import { PageLoading, EmptyState } from '@/shared/components'
 import { DecisionsPageClient } from '@/features/decisions/components'
 
+export const dynamic = 'force-dynamic'
+
 // ============================================
 // Pendientes Page (antes "Decisions")
 // ============================================

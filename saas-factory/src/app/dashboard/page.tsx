@@ -3,6 +3,8 @@ import { getDashboardMetrics, getPipelineMetrics } from '@/actions/dashboard'
 import { DashboardClient } from '@/features/dashboard/components'
 import { PageLoading } from '@/shared/components'
 
+export const dynamic = 'force-dynamic'
+
 async function DashboardContent() {
   const [metricsResult, pipelineResult] = await Promise.all([
     getDashboardMetrics(),

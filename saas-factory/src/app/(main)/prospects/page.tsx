@@ -4,6 +4,8 @@ import { PipelineBoard, ProspectForm } from '@/features/prospects/components'
 import { PageLoading, EmptyState } from '@/shared/components'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 async function ProspectsList() {
   const result = await listProspects()
 
