@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { bookAppointment } from "@/lib/use-cases/bookAppointment"
+import { createAppointmentBooking } from "@/actions/appointments"
 
 export default function AgendarPage() {
   const [step, setStep] = useState(1)
@@ -26,18 +26,20 @@ export default function AgendarPage() {
     e.preventDefault()
     setIsSubmitting(true)
     try {
-      await bookAppointment({
+      const result = await createAppointmentBooking({
         doctorId: formData.doctorId,
-        patientData: {
-          name: formData.name,
-          phone: formData.phone,
-          email: formData.email
-        },
+        patientName: formData.name,
+        patientPhone: formData.phone,
+        patientEmail: formData.email,
         appointmentDate: formData.date,
         startTime: formData.startTime,
         endTime: formData.endTime
       })
-      setIsSuccess(true)
+      if (result.success) {
+        setIsSuccess(true)
+      } else {
+        alert(`Error: ${result.error}`)
+      }
     } catch (error) {
       console.error("Error booking appointment:", error)
       alert("Error al agendar la cita. Por favor intenta de nuevo.")
