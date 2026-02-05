@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { saveLeadFromLanding } from '@/actions/landing'
 
 export default function LandingPage() {
   const [formData, setFormData] = useState({
@@ -10,11 +11,28 @@ export default function LandingPage() {
     phone: ''
   })
   const [submitted, setSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 3000)
+    setIsLoading(true)
+    setError('')
+
+    try {
+      const result = await saveLeadFromLanding(formData)
+      if (result.success) {
+        setSubmitted(true)
+        setFormData({ clinicName: '', email: '', phone: '' })
+        setTimeout(() => setSubmitted(false), 4000)
+      } else {
+        setError(result.error || 'Error al guardar tus datos')
+      }
+    } catch (err) {
+      setError('Error al procesar tu solicitud')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -36,32 +54,38 @@ export default function LandingPage() {
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-6xl font-bold text-white mb-6">
-            ¿Tu clínica pierde <span className="text-red-400">$5,000+ al mes</span> por sillas vacías?
+            La automatización que <span className="text-blue-400">multiplica ingresos</span> en clínicas
           </h1>
           <p className="text-2xl text-slate-300 mb-8">
-            Flash Clinic diagnostica tu hemorragia financiera y la cura con automatización.
+            Flash Clinic es el software que usan clínicas líderes para llenar agendas, reducir no-shows y crecer exponencialmente.
+          </p>
+          <p className="text-lg text-slate-400 mb-8">
+            <span className="text-yellow-400 font-semibold">⚡ Acceso Early Beta limitado</span> - Sé de los primeros en revolucionar tu clínica
           </p>
           <button
             onClick={() => document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-red-600 hover:bg-red-700 text-white text-lg font-semibold px-8 py-4 rounded-lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-4 rounded-lg transition-colors"
           >
-            Diagnosticar GRATIS →
+            Reserva tu ingreso →
           </button>
         </div>
       </section>
 
       <section id="cta" className="py-20 px-6">
         <div className="max-w-2xl mx-auto bg-gradient-to-b from-blue-500/10 border border-blue-500/30 rounded-2xl p-12">
-          <h2 className="text-4xl font-bold text-white text-center mb-10">
-            Obtén tu diagnóstico gratis
+          <h2 className="text-4xl font-bold text-white text-center mb-2">
+            Sé de los primeros
           </h2>
+          <p className="text-slate-300 text-center mb-10">
+            Acceso early beta limitado. Te avisaremos apenas esté lista para que seas de los primeros en probarla.
+          </p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
               placeholder="Nombre de la clínica"
               value={formData.clinicName}
               onChange={(e) => setFormData({ ...formData, clinicName: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white"
+              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400"
               required
             />
             <input
@@ -69,7 +93,7 @@ export default function LandingPage() {
               placeholder="Email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white"
+              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400"
               required
             />
             <input
@@ -77,16 +101,27 @@ export default function LandingPage() {
               placeholder="WhatsApp"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white"
+              className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400"
               required
             />
             <button
               type="submit"
-              className="w-full bg-red-600 text-white font-bold py-4 rounded-lg text-lg"
+              disabled={isLoading || submitted}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold py-4 rounded-lg text-lg transition-colors"
             >
-              {submitted ? '✓ Enviado' : 'Obtener diagnóstico →'}
+              {submitted ? '✓ Reserva confirmada' : isLoading ? 'Procesando...' : 'Reservar acceso →'}
             </button>
+            {error && (
+              <p className="text-center text-red-400 text-sm mt-2">
+                {error}
+              </p>
+            )}
           </form>
+          {submitted && (
+            <p className="text-center text-slate-300 mt-4">
+              ✨ Gracias por tu interés. Te contactaremos pronto cuando esté listo.
+            </p>
+          )}
         </div>
       </section>
     </div>
