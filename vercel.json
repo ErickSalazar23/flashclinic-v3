@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd saas-factory && npm run build",
+  "outputDirectory": "saas-factory/.next",
+  "framework": "nextjs"
+}
