@@ -1,0 +1,13 @@
+{
+  "name": "flash-clinic",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd saas-factory && npm run dev",
+    "build": "cd saas-factory && npm run build",
+    "start": "cd saas-factory && npm start",
+    "lint": "cd saas-factory && npm run lint"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

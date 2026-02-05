@@ -1,6 +1,5 @@
 {
-  "buildCommand": "cd saas-factory && npm ci && npm run build",
+  "buildCommand": "npm run build",
   "outputDirectory": "saas-factory/.next",
-  "framework": "nextjs",
-  "installCommand": "cd saas-factory && npm ci"
+  "framework": "nextjs"
 }
