@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git rebase:*)",
+      "Bash(git fetch:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(npm run build:*)",
+      "Bash(dir:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
