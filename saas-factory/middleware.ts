@@ -14,6 +14,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // Validate that environment variables are configured
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    console.error('Missing Supabase environment variables in middleware')
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
   // Create Supabase client for middleware
   let response = NextResponse.next({
     request: {
@@ -22,8 +28,8 @@ export async function middleware(request: NextRequest) {
   })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
@@ -39,12 +45,15 @@ export async function middleware(request: NextRequest) {
   )
 
   // Check if user is authenticated
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-  // If no user, redirect to login
-  if (!user) {
+    if (!user) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  } catch (error) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
