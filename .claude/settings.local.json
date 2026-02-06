@@ -16,7 +16,8 @@
       "WebFetch(domain:github.com)",
       "Bash(vercel --version:*)",
       "Bash(vercel list:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(curl:*)"
     ]
   }
 }
