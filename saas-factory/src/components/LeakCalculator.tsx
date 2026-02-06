@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
 export function LeakCalculator() {
   const [patients, setPatients] = useState(12)
@@ -13,6 +14,32 @@ export function LeakCalculator() {
   const [lostPatients, setLostPatients] = useState(0)
   const [potentialRecovery, setPotentialRecovery] = useState(0)
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [ctaHref, setCtaHref] = useState('/signup?intent=dashboard')
+
+  const supabase = createClient()
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          setIsLoggedIn(true)
+          setCtaHref('/dashboard')
+        } else {
+          setIsLoggedIn(false)
+          setCtaHref('/signup?intent=dashboard')
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error)
+        setCtaHref('/signup?intent=dashboard')
+      }
+    }
+    checkAuth()
+  }, [supabase])
+
+  // Calculate metrics
   useEffect(() => {
     const dailyLoss = (patients * (noshows / 100)) * ticket
     const monthly = dailyLoss * days
@@ -195,17 +222,19 @@ export function LeakCalculator() {
             ¿Quieres detener esta hemorragia?
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {!isLoggedIn && (
+              <a
+                href="/signup"
+                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105 text-lg inline-block"
+              >
+                Crear Cuenta 🚀
+              </a>
+            )}
             <a
-              href="/signup"
-              className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105 text-lg inline-block"
-            >
-              Crear Cuenta 🚀
-            </a>
-            <a
-              href="/dashboard"
+              href={ctaHref}
               className="px-8 py-4 bg-gradient-to-r from-violet-500 to-cyan-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-violet-500/50 transition-all duration-300 transform hover:scale-105 text-lg inline-block"
             >
-              Ver Control Tower 🗼
+              {isLoggedIn ? 'Ir a Mi Dashboard' : 'Ver Control Tower'} 🗼
             </a>
           </div>
           <p className="text-slate-500 text-xs mt-6">

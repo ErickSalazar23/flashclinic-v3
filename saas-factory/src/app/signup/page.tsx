@@ -1,16 +1,25 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function SignupPage() {
   const router = useRouter()
+  const [intent, setIntent] = useState('login')
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const supabase = createClient()
+
+  // Get intent from query params
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setIntent(params.get('intent') || 'login')
+    }
+  }, [])
 
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -49,7 +58,10 @@ export default function SignupPage() {
 
       setSuccess(true)
       setTimeout(() => {
-        router.push('/login')
+        // If intent=dashboard, go straight to dashboard after email confirmation
+        // Otherwise, go to login
+        const redirectPath = intent === 'dashboard' ? '/dashboard' : '/login'
+        router.push(redirectPath)
       }, 2000)
     })
   }
