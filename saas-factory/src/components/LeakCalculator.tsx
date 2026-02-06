@@ -194,9 +194,23 @@ export function LeakCalculator() {
           <p className="text-slate-400 text-sm mb-4">
             ¿Quieres detener esta hemorragia?
           </p>
-          <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105 text-lg">
-            Solicitar Diagnóstico Completo de Flash Clinic 🩺
-          </button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/signup"
+              className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 transform hover:scale-105 text-lg inline-block"
+            >
+              Crear Cuenta 🚀
+            </a>
+            <a
+              href="/dashboard"
+              className="px-8 py-4 bg-gradient-to-r from-violet-500 to-cyan-600 text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-violet-500/50 transition-all duration-300 transform hover:scale-105 text-lg inline-block"
+            >
+              Ver Control Tower 🗼
+            </a>
+          </div>
+          <p className="text-slate-500 text-xs mt-6">
+            Crea una cuenta para acceder al sistema completo y configurar tus confirmaciones automáticas por WhatsApp
+          </p>
         </div>
       </div>
     </div>

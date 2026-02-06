@@ -226,12 +226,6 @@ export default function LandingPage() {
       {/* LEAK CALCULATOR - Full Screen */}
       {showCalculator && (
         <>
-          <button
-            onClick={() => setShowCalculator(false)}
-            className="fixed top-24 right-6 z-40 px-4 py-2 bg-slate-800 border border-cyan-500/30 text-cyan-300 rounded-lg hover:bg-slate-700 transition text-sm font-semibold"
-          >
-            ← Volver al formulario
-          </button>
           <LeakCalculator />
         </>
       )}
