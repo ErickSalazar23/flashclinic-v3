@@ -10,23 +10,15 @@ export async function saveLeadFromLanding(data: {
   try {
     const supabase = createClient()
 
-    // Crear un prospect desde el lead de la landing
-    const { data: prospect, error } = await supabase
-      .from('prospects')
+    // Save lead to landing_leads table (public table without RLS)
+    const { data: lead, error } = await supabase
+      .from('landing_leads')
       .insert({
-        doctor_name: 'Por confirmar',
-        specialty: 'Por confirmar',
         clinic_name: data.clinicName,
-        phone: data.phone,
         email: data.email,
-        city: 'Por confirmar',
-        citas_semanales: 0,
-        ticket_promedio: 0,
-        no_show_percentage: 0,
-        slots_disponibles: 0,
-        horas_consulta: 0,
-        stage: 'agenda_detenida',
-        notes: 'Lead from landing page - Early Beta signup'
+        phone: data.phone,
+        status: 'new',
+        notes: 'Early Beta signup from landing page'
       })
       .select()
       .single()
@@ -36,7 +28,7 @@ export async function saveLeadFromLanding(data: {
       return { success: false, error: error.message }
     }
 
-    return { success: true, prospect }
+    return { success: true, lead }
   } catch (err) {
     console.error('Error:', err)
     return { success: false, error: 'Error guardando datos' }
