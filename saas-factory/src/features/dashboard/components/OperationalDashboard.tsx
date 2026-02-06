@@ -2,6 +2,7 @@
 
 import { AppointmentsMetrics } from '@/actions/appointments-metrics'
 import Link from 'next/link'
+import { UserDropdown } from '@/components/UserDropdown'
 
 interface OperationalDashboardProps {
   metrics: AppointmentsMetrics
@@ -52,9 +53,14 @@ export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
               </div>
             </div>
           </div>
-          <div className="text-right">
-            <p className="text-slate-400 text-sm">Flash Clinic V3</p>
-            <p className="text-green-400 font-mono text-xs">Status: OPERATIVO ✓</p>
+          {/* PALANCA 3: User Dropdown in top-right corner */}
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-slate-400 text-sm">Flash Clinic V3</p>
+              <p className="text-green-400 font-mono text-xs">Status: OPERATIVO ✓</p>
+            </div>
+            <div className="h-10 w-px bg-slate-700/50"></div>
+            <UserDropdown />
           </div>
         </div>
 

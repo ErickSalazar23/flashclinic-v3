@@ -62,3 +62,4 @@ coverage/
 *.bak
 *.backup
 .vercel
+.env*.local
