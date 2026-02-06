@@ -30,7 +30,12 @@ function formatRelativeTime(timestamp: string): string {
 
 export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-[#0a1628] to-slate-950 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-950 to-slate-950 text-white p-6 relative overflow-hidden">
+      {/* PALANCA 1: Fondo futurista profundo con efecto de red lejana */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-transparent"></div>
+      </div>
+      <div className="relative">
       <div className="max-w-7xl mx-auto">
         {/* HEADER */}
         <div className="mb-12 flex items-center justify-between">
@@ -189,28 +194,32 @@ export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
 
         {/* OPERATIONAL SUMMARY SECTION */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Resumen de Hoy */}
-          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-cyan-500/30 rounded-2xl p-6 hover:border-cyan-500/60 transition-all">
-            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <span className="text-2xl">📊</span>
-              Resumen de Hoy
+          {/* PALANCA 2: Ingresos Rescatados - Métricas de Impacto */}
+          <div className="bg-gradient-to-br from-cyan-950/50 to-slate-900/50 border-2 border-cyan-500/40 rounded-2xl p-6 hover:border-cyan-500/80 hover:shadow-2xl hover:shadow-cyan-500/30 transition-all duration-300 relative overflow-hidden group">
+            {/* Glow effect */}
+            <div className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl group-hover:bg-cyan-500/40 transition-all duration-300"></div>
+
+            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 relative z-10">
+              <span className="text-2xl">💎</span>
+              Ingresos Rescatados
             </h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
-                <span className="text-slate-300 font-semibold">Total de Citas</span>
-                <span className="text-2xl font-black text-cyan-400">{metrics.citasHoy}</span>
+            <div className="space-y-4 relative z-10">
+              {/* Ingresos rescatados hoy */}
+              <div className="p-4 bg-cyan-950/40 border border-cyan-500/30 rounded-lg hover:bg-cyan-950/60 transition-all">
+                <p className="text-cyan-300/80 text-xs font-bold uppercase tracking-wider mb-2">Hoy</p>
+                <p className="text-3xl font-black text-cyan-400">{formatMoney(metrics.dineroRecuperado)}</p>
               </div>
-              <div className="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
-                <span className="text-slate-300 font-semibold">✅ Confirmadas</span>
-                <span className="text-2xl font-black text-green-400">{metrics.citasConfirmadas}</span>
+
+              {/* Dinero en riesgo */}
+              <div className="p-4 bg-orange-950/40 border border-orange-500/30 rounded-lg hover:bg-orange-950/60 transition-all">
+                <p className="text-orange-300/80 text-xs font-bold uppercase tracking-wider mb-2">En Riesgo (24h)</p>
+                <p className="text-3xl font-black text-orange-400">{formatMoney(metrics.dineroEnRiesgo)}</p>
               </div>
-              <div className="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
-                <span className="text-slate-300 font-semibold">⏳ Pendientes</span>
-                <span className="text-2xl font-black text-orange-400">{metrics.citasPendientesConfirmacion}</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
-                <span className="text-slate-300 font-semibold">❌ Canceladas</span>
-                <span className="text-2xl font-black text-red-400">{metrics.citasCanceladas}</span>
+
+              {/* Pérdida mensual */}
+              <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-lg hover:bg-red-950/60 transition-all">
+                <p className="text-red-300/80 text-xs font-bold uppercase tracking-wider mb-2">Pérdida/Mes</p>
+                <p className="text-3xl font-black text-red-400">{formatMoney(metrics.hemorragiaMes)}</p>
               </div>
             </div>
           </div>
@@ -239,34 +248,37 @@ export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
             </div>
           </div>
 
-          {/* Motor Operacional - Recuperaciones Recientes */}
-          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-violet-500/30 rounded-2xl p-6 hover:border-violet-500/60 transition-all">
-            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <span className="text-2xl">🤖</span>
-              Recuperaciones Recientes
+          {/* PALANCA 3: Motor Operacional - Recuperaciones Recientes Feed */}
+          <div className="bg-gradient-to-br from-green-950/50 to-slate-900/50 border-2 border-green-500/40 rounded-2xl p-6 hover:border-green-500/80 hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-300 relative overflow-hidden group">
+            {/* Glow effect */}
+            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-green-500/20 rounded-full blur-3xl group-hover:bg-green-500/40 transition-all duration-300"></div>
+
+            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 relative z-10">
+              <span className="text-2xl">⚡</span>
+              Sistema en Acción
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-3 relative z-10">
               {metrics.recentRecoveries && metrics.recentRecoveries.length > 0 ? (
-                metrics.recentRecoveries.slice(0, 4).map(recovery => (
-                  <div key={recovery.id} className="flex items-start gap-2 p-3 bg-green-950/20 border border-green-500/20 rounded-lg">
-                    <div className="text-green-400 mt-0.5 text-lg">✓</div>
+                metrics.recentRecoveries.slice(0, 5).map(recovery => (
+                  <div key={recovery.id} className="flex items-start gap-3 p-3 bg-green-950/40 border border-green-500/40 rounded-lg hover:bg-green-950/60 hover:border-green-400/60 transition-all group/item">
+                    <div className="text-green-400 mt-0.5 text-lg font-bold animate-pulse">✓</div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-slate-200 text-sm font-semibold">
-                        {recovery.patientName}
+                      <p className="text-green-200 text-sm font-semibold group-hover/item:text-green-100 transition-colors">
+                        Recuperada: {recovery.patientName}
                       </p>
-                      <p className="text-slate-400 text-xs mt-1">
-                        {recovery.appointmentDate}
+                      <p className="text-slate-300 text-xs mt-1.5 font-mono">
+                        📅 {recovery.appointmentDate}
                       </p>
-                      <p className="text-green-400/60 text-xs mt-1">
-                        {formatRelativeTime(recovery.recoveredAt)}
+                      <p className="text-green-400/70 text-xs mt-1 font-semibold">
+                        ⏰ {formatRelativeTime(recovery.recoveredAt)}
                       </p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="p-4 text-center">
-                  <p className="text-slate-400 text-sm">Sistema monitoreando citas</p>
-                  <p className="text-slate-500 text-xs mt-2">Las recuperaciones aparecerán aquí</p>
+                <div className="p-6 text-center bg-slate-800/30 border border-slate-700/30 rounded-lg">
+                  <p className="text-slate-300 text-sm font-semibold mb-1">🤖 Sistema activo</p>
+                  <p className="text-slate-500 text-xs">Monitoreando citas en tiempo real...</p>
                 </div>
               )}
             </div>
@@ -315,6 +327,7 @@ export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
           </button>
         </div>
       </div>
+      </div> {/* cierre del relative */}
     </div>
   )
 }
