@@ -53,6 +53,57 @@ export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
           </div>
         </div>
 
+        {/* HERO BANNER: Weekly System Impact */}
+        {metrics.weeklyRecovery && (
+          <div className="mb-8 bg-gradient-to-r from-green-950/40 via-emerald-950/40 to-green-950/40 border-2 border-green-500/50 rounded-3xl p-8 shadow-2xl shadow-green-500/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-5xl animate-pulse">
+                  {metrics.weeklyRecovery.trendDirection === 'up' ? '📈' : '✅'}
+                </div>
+                <div>
+                  <p className="text-green-400/70 text-sm font-bold uppercase tracking-widest mb-2">
+                    Sistema Trabajando Para Ti
+                  </p>
+                  <h2 className="text-5xl font-black text-white mb-2">
+                    Esta semana recuperamos{' '}
+                    <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                      {metrics.weeklyRecovery.citasRecuperadas} citas
+                    </span>
+                  </h2>
+                  <div className="flex items-center gap-6 mt-4">
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase">Ingresos Protegidos</p>
+                      <p className="text-3xl font-black text-green-400">
+                        {formatMoney(metrics.weeklyRecovery.dineroRecuperado)}
+                      </p>
+                    </div>
+                    <div className="h-12 w-px bg-slate-700"></div>
+                    <div>
+                      <p className="text-slate-400 text-xs uppercase">vs Semana Pasada</p>
+                      <p className={`text-2xl font-black ${
+                        metrics.weeklyRecovery.comparisonVsLastWeek > 0 ? 'text-green-400' :
+                        metrics.weeklyRecovery.comparisonVsLastWeek < 0 ? 'text-red-400' :
+                        'text-slate-400'
+                      }`}>
+                        {metrics.weeklyRecovery.comparisonVsLastWeek > 0 ? '+' : ''}
+                        {metrics.weeklyRecovery.comparisonVsLastWeek}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-slate-400 text-sm mb-2">Sin tu intervención</p>
+                <div className="flex items-center gap-2 text-green-400">
+                  <span className="text-4xl">🤖</span>
+                  <span className="text-sm font-bold">Sistema Autónomo</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* HERO KPI SECTION */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {/* KPI: Hemorragia Hoy */}
@@ -188,27 +239,34 @@ export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
             </div>
           </div>
 
-          {/* Motor Operacional */}
+          {/* Motor Operacional - Recuperaciones Recientes */}
           <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-violet-500/30 rounded-2xl p-6 hover:border-violet-500/60 transition-all">
             <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
               <span className="text-2xl">🤖</span>
-              Motor Operacional
+              Recuperaciones Recientes
             </h3>
             <div className="space-y-3">
-              {metrics.systemActions && metrics.systemActions.length > 0 ? (
-                metrics.systemActions.slice(0, 4).map(action => (
-                  <div key={action.id} className="flex items-start gap-2 p-3 bg-slate-800/50 rounded-lg">
-                    <div className="text-green-400 mt-0.5">✓</div>
+              {metrics.recentRecoveries && metrics.recentRecoveries.length > 0 ? (
+                metrics.recentRecoveries.slice(0, 4).map(recovery => (
+                  <div key={recovery.id} className="flex items-start gap-2 p-3 bg-green-950/20 border border-green-500/20 rounded-lg">
+                    <div className="text-green-400 mt-0.5 text-lg">✓</div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-slate-200 text-xs leading-tight">{action.description}</p>
-                      <p className="text-slate-500 text-xs mt-1">{formatRelativeTime(action.timestamp)}</p>
+                      <p className="text-slate-200 text-sm font-semibold">
+                        {recovery.patientName}
+                      </p>
+                      <p className="text-slate-400 text-xs mt-1">
+                        {recovery.appointmentDate}
+                      </p>
+                      <p className="text-green-400/60 text-xs mt-1">
+                        {formatRelativeTime(recovery.recoveredAt)}
+                      </p>
                     </div>
                   </div>
                 ))
               ) : (
                 <div className="p-4 text-center">
-                  <p className="text-slate-400 text-sm">Sistema en espera de acciones</p>
-                  <p className="text-slate-500 text-xs mt-2">(Se mostrará actividad en Phase 4)</p>
+                  <p className="text-slate-400 text-sm">Sistema monitoreando citas</p>
+                  <p className="text-slate-500 text-xs mt-2">Las recuperaciones aparecerán aquí</p>
                 </div>
               )}
             </div>
