@@ -2,10 +2,20 @@ import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 
 // Protected routes that require authentication
-const PROTECTED_ROUTES = ['/dashboard', '/prospects', '/pendientes', '/configuracion']
+const PROTECTED_ROUTES = ['/dashboard', '/prospects', '/pendientes', '/configuracion', '/(main)']
+
+// Public routes that don't require authentication
+const PUBLIC_ROUTES = ['/landing', '/login', '/signup', '/citas', '/auth', '/api/init']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // Check if the route is public
+  const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route))
+
+  if (isPublicRoute) {
+    return NextResponse.next()
+  }
 
   // Check if the route is protected
   const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route))
