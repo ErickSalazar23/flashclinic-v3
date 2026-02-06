@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { saveLeadFromLanding } from '@/actions/landing'
 import { LeakCalculator } from '@/components/LeakCalculator'
@@ -15,6 +15,25 @@ export default function LandingPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [showCalculator, setShowCalculator] = useState(false)
+  const [dbInitialized, setDbInitialized] = useState(false)
+
+  // Inicializar tabla landing_leads al cargar la página
+  useEffect(() => {
+    const initDB = async () => {
+      try {
+        const response = await fetch('/api/init/landing-leads')
+        const data = await response.json()
+        if (data.success) {
+          setDbInitialized(true)
+        } else {
+          console.warn('Database not initialized:', data.message)
+        }
+      } catch (err) {
+        console.warn('Could not auto-initialize database')
+      }
+    }
+    initDB()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
