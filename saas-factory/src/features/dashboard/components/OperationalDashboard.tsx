@@ -312,12 +312,12 @@ export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
           </Link>
 
           <Link
-            href="/landing"
+            href="/dashboard/calculator"
             className="group p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-violet-500/30 rounded-2xl hover:border-violet-500/60 hover:shadow-lg hover:shadow-violet-500/20 transition-all"
           >
-            <div className="text-3xl mb-3">🎯</div>
-            <h4 className="font-bold text-white mb-2">Calculadora de Fugas</h4>
-            <p className="text-slate-400 text-sm">Diagnóstico de hemorragia financiera</p>
+            <div className="text-3xl mb-3">📊</div>
+            <h4 className="font-bold text-white mb-2">Calculadora Premium</h4>
+            <p className="text-slate-400 text-sm">Ajusta parámetros y simula escenarios</p>
           </Link>
         </div>
 
