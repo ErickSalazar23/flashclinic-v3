@@ -17,7 +17,9 @@
       "Bash(vercel --version:*)",
       "Bash(vercel list:*)",
       "Bash(vercel:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(node execute-schema.js:*)",
+      "Bash(node execute-schema-v2.js:*)"
     ]
   }
 }

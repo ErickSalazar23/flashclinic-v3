@@ -7,10 +7,11 @@ export async function saveLeadFromLanding(data: {
   email: string
   phone: string
 }) {
+  console.log('Saving lead:', data)
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
 
-    // Save lead to landing_leads table (public table without RLS)
+    // Save lead to landing_leads table
     const { data: lead, error } = await supabase
       .from('landing_leads')
       .insert({
@@ -24,13 +25,19 @@ export async function saveLeadFromLanding(data: {
       .single()
 
     if (error) {
-      console.error('Error saving lead:', error)
-      return { success: false, error: error.message }
+      console.error('Supabase error saving lead:', error)
+      return { 
+        success: false, 
+        error: `Supabase Error: ${error.message} (Code: ${error.code})` 
+      }
     }
 
     return { success: true, lead }
   } catch (err) {
-    console.error('Error:', err)
-    return { success: false, error: 'Error guardando datos' }
+    console.error('Unexpected error:', err)
+    return { 
+      success: false, 
+      error: err instanceof Error ? err.message : 'Error interno al guardar datos' 
+    }
   }
 }

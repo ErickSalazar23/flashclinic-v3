@@ -33,7 +33,7 @@ const AVERAGE_TICKET = 50 // Assume $50 per appointment (configurable later)
 
 export async function getAppointmentsMetrics(): Promise<ActionResult<AppointmentsMetrics>> {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Get authenticated user
     const {

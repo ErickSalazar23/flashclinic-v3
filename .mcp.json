@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "type": "http",
+      "url": "https://yrlxpabmxezbcftxqivs.supabase.co/rest/v1",
+      "headers": {
+        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlybHhwYWJteGV6YmNmdHhxaXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NjI5NzEsImV4cCI6MjA4NTEzODk3MX0.6Rh8UKoGJfRKkxaZ8jeWzeRB0D81ViY0fKCt-A8ucLg",
+        "Authorization": "Bearer sb_secret_O4IGRp0DXn1DdWBFcCfnOQ_40mAKw6s",
+        "Content-Type": "application/json"
+      }
+    }
+  }
+}

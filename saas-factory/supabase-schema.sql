@@ -285,3 +285,49 @@ CREATE TRIGGER update_appointments_updated_at
   BEFORE UPDATE ON appointments
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
+
+-- =====================================================
+-- LANDING_LEADS TABLE (for early beta signup)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS landing_leads (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+  clinic_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+
+  status TEXT NOT NULL DEFAULT 'new'
+    CHECK (status IN ('new', 'contacted', 'qualified', 'rejected')),
+
+  notes TEXT DEFAULT '',
+  contacted_at TIMESTAMPTZ,
+
+  -- For converting to actual prospect
+  prospect_id UUID REFERENCES prospects(id) ON DELETE SET NULL
+);
+
+-- Indexes for landing_leads
+CREATE INDEX IF NOT EXISTS idx_landing_leads_status ON landing_leads(status);
+CREATE INDEX IF NOT EXISTS idx_landing_leads_email ON landing_leads(email);
+CREATE INDEX IF NOT EXISTS idx_landing_leads_created ON landing_leads(created_at);
+
+-- RLS for landing_leads
+ALTER TABLE landing_leads ENABLE ROW LEVEL SECURITY;
+
+-- Allow anyone to insert (public landing page)
+CREATE POLICY "Anyone can insert landing leads"
+  ON landing_leads FOR INSERT
+  WITH CHECK (true);
+
+-- Only admins can view all leads (public insert, but backend-only select)
+CREATE POLICY "Service role can view all landing leads"
+  ON landing_leads FOR SELECT
+  USING (auth.role() = 'service_role');
+
+-- Trigger for updated_at
+CREATE TRIGGER update_landing_leads_updated_at
+  BEFORE UPDATE ON landing_leads
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();

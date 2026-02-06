@@ -12,7 +12,7 @@ export async function createAppointmentBooking(data: {
   endTime: string
 }) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Note: Public bookings bypass normal RLS by not requiring user_id
     // In production, consider adding a webhook to notify clinic staff
