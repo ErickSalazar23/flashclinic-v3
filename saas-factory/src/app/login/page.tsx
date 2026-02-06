@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -186,9 +187,17 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-slate-500 text-sm mt-6">
-          Flash Clinic V3 - Motor de Adquisición Médica
-        </p>
+        <div className="text-center mt-6 space-y-3">
+          <p className="text-slate-400 text-sm">
+            ¿No tienes cuenta?{' '}
+            <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-medium">
+              Crear una aquí
+            </Link>
+          </p>
+          <p className="text-center text-slate-500 text-sm">
+            Flash Clinic V3 - Motor de Adquisición Médica
+          </p>
+        </div>
       </div>
     </div>
   )
