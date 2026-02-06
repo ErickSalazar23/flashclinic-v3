@@ -35,6 +35,19 @@ export async function getAppointmentsMetrics(): Promise<ActionResult<Appointment
   try {
     const supabase = createClient()
 
+    // Get authenticated user
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      return {
+        ok: false,
+        error: 'No autenticado. Por favor inicia sesión.',
+      }
+    }
+
     // Get today's date range
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -55,6 +68,7 @@ export async function getAppointmentsMetrics(): Promise<ActionResult<Appointment
     const { data: todayAppointments, error: todayError } = await supabase
       .from('appointments')
       .select('id, status, appointment_date')
+      .eq('user_id', user.id)
       .eq('appointment_date', todayString)
 
     if (todayError) throw new Error(`Failed to fetch today's appointments: ${todayError.message}`)
@@ -70,6 +84,7 @@ export async function getAppointmentsMetrics(): Promise<ActionResult<Appointment
     const { data: riskAppointments, error: riskError } = await supabase
       .from('appointments')
       .select('id, status, appointment_date')
+      .eq('user_id', user.id)
       .eq('status', 'pending')
       .gte('appointment_date', todayString)
       .lt('appointment_date', tomorrowString)
@@ -88,6 +103,7 @@ export async function getAppointmentsMetrics(): Promise<ActionResult<Appointment
     const { data: pastAppointments, error: pastError } = await supabase
       .from('appointments')
       .select('id, status')
+      .eq('user_id', user.id)
       .lt('appointment_date', todayString)
 
     if (pastError) throw new Error(`Failed to fetch past appointments: ${pastError.message}`)
@@ -107,6 +123,7 @@ export async function getAppointmentsMetrics(): Promise<ActionResult<Appointment
     const { data: monthAppointments, error: monthError } = await supabase
       .from('appointments')
       .select('id, status, appointment_date')
+      .eq('user_id', user.id)
       .gte('appointment_date', startOfMonth.toISOString().split('T')[0])
       .lt('appointment_date', tomorrowString)
 
