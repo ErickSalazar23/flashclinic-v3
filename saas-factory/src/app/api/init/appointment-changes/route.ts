@@ -1,12 +1,19 @@
-import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient()
+    const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-    // Get service role client for admin operations
-    const { data, error: adminError } = await request.json().catch(() => ({ data: null }))
+    if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: 'Missing Supabase credentials. Set SUPABASE_SERVICE_ROLE_KEY environment variable.'
+        },
+        { status: 400 }
+      )
+    }
 
     const sql = `
 -- =====================================================
@@ -77,16 +84,26 @@ CREATE TRIGGER track_appointment_status_changes
   EXECUTE FUNCTION log_appointment_status_change();
     `
 
-    // Use Supabase admin client to execute raw SQL
-    const { data: result, error } = await supabase.rpc('exec_raw_sql', { sql })
+    // Execute SQL via Supabase query API
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/query`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
+        'Content-Type': 'application/json',
+        'apikey': SERVICE_ROLE_KEY,
+      },
+      body: JSON.stringify({ query: sql })
+    })
 
-    if (error) {
-      // If RPC doesn't exist, try direct query
-      console.log('⚠️ RPC not available, attempting direct execution')
+    const result = await response.json()
+
+    if (!response.ok) {
+      console.log('⚠️ API execution failed. Trying alternative approach...')
       return NextResponse.json({
         ok: false,
-        message: 'Manual execution required. Please run the SQL in Supabase SQL Editor at: https://app.supabase.com/project/yrlxpabmxezbcftxqivs/sql/new',
-        sql
+        message: 'Manual execution required. Please run the SQL in Supabase SQL Editor.',
+        sql,
+        url: 'https://app.supabase.com/project/yrlxpabmxezbcftxqivs/sql/new'
       }, { status: 400 })
     }
 
@@ -98,7 +115,11 @@ CREATE TRIGGER track_appointment_status_changes
   } catch (error) {
     console.error('Error:', error)
     return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        ok: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        message: 'Please execute SQL manually in Supabase SQL Editor: https://app.supabase.com/project/yrlxpabmxezbcftxqivs/sql/new'
+      },
       { status: 500 }
     )
   }
