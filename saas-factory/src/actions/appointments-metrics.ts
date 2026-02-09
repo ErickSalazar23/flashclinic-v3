@@ -46,7 +46,9 @@ export interface AppointmentsMetrics {
 
 type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string }
 
-const AVERAGE_TICKET = 50 // Assume $50 per appointment (configurable later)
+const AVERAGE_TICKET = 50 // Inversión base por turno
+const LTV_MULTIPLIER = 3   // Multiplicador de Lifetime Value (Pérdida proyectada)
+const COSTO_OPORTUNIDAD = 25 // Costo de slot vacío (gastos fijos)
 
 // ============ WEEKLY RECOVERY METRICS (PALANCA 2) ============
 
@@ -157,6 +159,26 @@ async function getRecentRecoveries(supabase: any, userId: string) {
   })
 }
 
+// ============ DAILY RECOVERY METRICS (TODAY) ============
+
+async function getDailyRecoveryMetrics(supabase: any, userId: string, tasaNoShow: number) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const todayString = today.toISOString().split('T')[0]
+
+  const { data: todayChanges } = await supabase
+    .from('appointment_changes')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('is_system_recovery', true)
+    .gte('created_at', today.toISOString())
+
+  const recoveredCount = todayChanges?.length || 0
+  
+  // Real recovery = No-show probability * Ticket
+  return Math.round(recoveredCount * (tasaNoShow / 100) * AVERAGE_TICKET)
+}
+
 export async function getAppointmentsMetrics(): Promise<ActionResult<AppointmentsMetrics>> {
   try {
     const supabase = await createClient()
@@ -173,6 +195,9 @@ export async function getAppointmentsMetrics(): Promise<ActionResult<Appointment
         error: 'No autenticado. Por favor inicia sesión.',
       }
     }
+
+    // Get recent recoveries for feed
+    const recentRecoveries = await getRecentRecoveries(supabase, user.id)
 
     // Get today's date range
     const today = new Date()
@@ -241,7 +266,9 @@ export async function getAppointmentsMetrics(): Promise<ActionResult<Appointment
 
     // ============ FINANCIAL IMPACT - TODAY ============
 
-    const hemorragiaHoy = (citasCanceladas + todayAppointments?.filter(a => a.status === 'no_show').length || 0) * AVERAGE_TICKET
+    // El cálculo de hemorragia no es solo el ticket perdido, es el LTV + Costo de Oportunidad
+    const numHemorragia = (citasCanceladas + (todayAppointments?.filter(a => a.status === 'no_show').length || 0))
+    const hemorragiaHoy = numHemorragia * (AVERAGE_TICKET * LTV_MULTIPLIER + COSTO_OPORTUNIDAD)
     const dineroEnRiesgo = citasPendientesConfirmacion * AVERAGE_TICKET
 
     // ============ FINANCIAL IMPACT - THIS MONTH ============
@@ -255,19 +282,13 @@ export async function getAppointmentsMetrics(): Promise<ActionResult<Appointment
 
     if (monthError) throw new Error(`Failed to fetch month appointments: ${monthError.message}`)
 
-    const hemorragiaMes =
-      (monthAppointments?.filter(a => a.status === 'cancelled' || a.status === 'no_show').length || 0) * AVERAGE_TICKET
+    const numHemorragiaMes = (monthAppointments?.filter(a => a.status === 'cancelled' || a.status === 'no_show').length || 0)
+    const hemorragiaMes = numHemorragiaMes * (AVERAGE_TICKET * LTV_MULTIPLIER + COSTO_OPORTUNIDAD)
 
-    // Confirmed appointments = money recovered
-    const dineroRecuperado = (citasConfirmadas) * AVERAGE_TICKET
-
-    // ============ WEEKLY RECOVERY METRICS (PALANCA 2) ============
+    // Real money recovered today (AI Impact)
+    const dineroRecuperado = await getDailyRecoveryMetrics(supabase, user.id, tasaNoShow)
 
     const weeklyRecovery = await getWeeklyRecoveryMetrics(supabase, user.id, tasaNoShow)
-
-    // ============ RECENT RECOVERY EVENTS ============
-
-    const recentRecoveries = await getRecentRecoveries(supabase, user.id)
 
     // ============ SYSTEM ACTIONS (placeholder, will populate in Phase 4) ============
 

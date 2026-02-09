@@ -3,6 +3,8 @@
 import { AppointmentsMetrics } from '@/actions/appointments-metrics'
 import Link from 'next/link'
 import { UserDropdown } from '@/components/UserDropdown'
+import { SuccessLoop } from './SuccessLoop'
+import { FloatingChat } from '@/components/chat/FloatingChat'
 
 interface OperationalDashboardProps {
   metrics: AppointmentsMetrics
@@ -31,309 +33,184 @@ function formatRelativeTime(timestamp: string): string {
 
 export function OperationalDashboard({ metrics }: OperationalDashboardProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-950 to-slate-950 text-white p-6 relative overflow-hidden">
-      {/* PALANCA 1: Fondo futurista profundo con efecto de red lejana */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-transparent"></div>
-      </div>
-      <div className="relative">
-      <div className="max-w-7xl mx-auto">
-        {/* HEADER */}
-        <div className="mb-12 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl">
-                🗼
-              </div>
-              <div>
-                <h1 className="text-4xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-violet-400 bg-clip-text text-transparent">
-                  Torre de Control
-                </h1>
-                <p className="text-slate-400 text-sm">Motor Operacional - Estado en Vivo</p>
+    <div className="min-h-screen bg-slate-950 text-white p-6 relative overflow-hidden font-sans">
+      {/* CAPA DE DISEÑO AAA: Brillos de autoridad */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* HEADER DE AUTORIDAD */}
+        <div className="mb-10 flex items-center justify-between bg-slate-900/40 backdrop-blur-md p-6 rounded-3xl border border-slate-800/50 shadow-2xl">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center text-3xl shadow-lg shadow-sky-500/20">
+              🗼
+            </div>
+            <div>
+              <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-sky-300 via-sky-100 to-indigo-300 bg-clip-text text-transparent">
+                Torre de Control V3
+              </h1>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Sistema de Inteligencia Médica • Activo</p>
               </div>
             </div>
           </div>
-          {/* PALANCA 3: User Dropdown in top-right corner */}
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-slate-400 text-sm">Flash Clinic V3</p>
-              <p className="text-green-400 font-mono text-xs">Status: OPERATIVO ✓</p>
+          
+          <div className="flex items-center gap-6">
+            <div className="hidden md:block text-right">
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Propriedad de</p>
+              <p className="text-sm font-bold text-sky-400">Dr. Salazar</p>
             </div>
-            <div className="h-10 w-px bg-slate-700/50"></div>
+            <div className="h-10 w-px bg-slate-800"></div>
             <UserDropdown />
           </div>
         </div>
 
-        {/* HERO BANNER: Weekly System Impact */}
-        {metrics.weeklyRecovery && (
-          <div className="mb-8 bg-gradient-to-r from-green-950/40 via-emerald-950/40 to-green-950/40 border-2 border-green-500/50 rounded-3xl p-8 shadow-2xl shadow-green-500/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-5xl animate-pulse">
-                  {metrics.weeklyRecovery.trendDirection === 'up' ? '📈' : '✅'}
-                </div>
-                <div>
-                  <p className="text-green-400/70 text-sm font-bold uppercase tracking-widest mb-2">
-                    Sistema Trabajando Para Ti
-                  </p>
-                  <h2 className="text-5xl font-black text-white mb-2">
-                    Esta semana recuperamos{' '}
-                    <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-                      {metrics.weeklyRecovery.citasRecuperadas} citas
-                    </span>
-                  </h2>
-                  <div className="flex items-center gap-6 mt-4">
-                    <div>
-                      <p className="text-slate-400 text-xs uppercase">Ingresos Protegidos</p>
-                      <p className="text-3xl font-black text-green-400">
-                        {formatMoney(metrics.weeklyRecovery.dineroRecuperado)}
-                      </p>
-                    </div>
-                    <div className="h-12 w-px bg-slate-700"></div>
-                    <div>
-                      <p className="text-slate-400 text-xs uppercase">vs Semana Pasada</p>
-                      <p className={`text-2xl font-black ${
-                        metrics.weeklyRecovery.comparisonVsLastWeek > 0 ? 'text-green-400' :
-                        metrics.weeklyRecovery.comparisonVsLastWeek < 0 ? 'text-red-400' :
-                        'text-slate-400'
-                      }`}>
-                        {metrics.weeklyRecovery.comparisonVsLastWeek > 0 ? '+' : ''}
-                        {metrics.weeklyRecovery.comparisonVsLastWeek}%
-                      </p>
-                    </div>
-                  </div>
-                </div>
+        {/* ALERTA DE HEMORRAGIA (Narrativa del Dolor) */}
+        <div className="mb-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-gradient-to-br from-red-950/20 to-slate-900/40 border-2 border-red-500/30 rounded-3xl p-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+            <div className="relative z-10 flex items-center justify-between">
+              <div>
+                <span className="px-3 py-1 bg-red-500/10 text-red-500 text-[10px] font-black tracking-[0.2em] rounded-full border border-red-500/20">
+                  CRITICAL FINANCIAL LEAK
+                </span>
+                <h2 className="text-4xl font-black mt-4 mb-2 uppercase italic italic">
+                  Hemorragia Proyectada: <br/>
+                  <span className="text-red-500">{formatMoney(metrics.hemorragiaHoy)}</span>
+                </h2>
+                <p className="text-slate-400 text-sm max-w-md">
+                  Esta cifra no es solo una cita perdida; representa el **Lifetime Value (LTV)** y el costo de oportunidad de slots vacíos que tu clínica está drenando hoy.
+                </p>
               </div>
-              <div className="text-right">
-                <p className="text-slate-400 text-sm mb-2">Sin tu intervención</p>
-                <div className="flex items-center gap-2 text-green-400">
-                  <span className="text-4xl">🤖</span>
-                  <span className="text-sm font-bold">Sistema Autónomo</span>
-                </div>
+              <div className="hidden md:flex flex-col items-center">
+                <div className="text-6xl mb-2 grayscale opacity-50">💔</div>
+                <button className="text-[10px] font-bold text-red-400 underline underline-offset-4 tracking-widest hover:text-red-300 transition-colors uppercase">
+                  Ver Bitácora de Perdidas
+                </button>
               </div>
             </div>
           </div>
-        )}
 
-        {/* HERO KPI SECTION */}
+          <div className="bg-gradient-to-br from-sky-950/20 to-slate-900/40 border border-sky-500/20 rounded-3xl p-8 flex flex-col justify-center">
+            <p className="text-sky-400/70 text-[10px] font-black tracking-[0.2em] uppercase mb-4">Capital Rescatado</p>
+            <div className="text-5xl font-black text-white mb-2">{formatMoney(metrics.dineroRecuperado)}</div>
+            <div className="flex items-center gap-2 text-green-400 text-sm font-bold">
+              <span>↑ 12%</span>
+              <span className="text-slate-500 font-normal">vs periodo anterior</span>
+            </div>
+            <div className="mt-6 flex gap-1">
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className={`h-1 flex-1 rounded-full ${i <= 4 ? 'bg-sky-500' : 'bg-slate-800'}`}></div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* GRID DE MÉTRICAS VIVAS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {/* KPI: Hemorragia Hoy */}
-          <div className="group bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-red-500/30 rounded-2xl p-6 hover:border-red-500/60 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <p className="text-red-400/70 text-xs font-bold uppercase tracking-widest mb-2">
-                  💀 Hemorragia Hoy
-                </p>
-                <div className="text-4xl font-black text-red-400">{formatMoney(metrics.hemorragiaHoy)}</div>
+          {[
+            { label: 'Citas en Riesgo', value: metrics.citasPendientesConfirmacion, sub: 'Fuga Potencial', icon: '⚠️', color: 'border-amber-500/20 text-amber-500' },
+            { label: 'Rescates Exitosos', value: metrics.weeklyRecovery?.citasRecuperadas || 0, sub: 'Esta Semana', icon: '💎', color: 'border-sky-500/20 text-sky-400' },
+            { label: 'Activos Cognitivos', value: '12', sub: 'Documentados', icon: '🧠', color: 'border-indigo-500/20 text-indigo-400' },
+            { label: 'Eficiencia IA', value: '94%', sub: 'Nivel Óptimo', icon: '⚡', color: 'border-emerald-500/20 text-emerald-400' }
+          ].map((kpi, i) => (
+            <div key={i} className={`bg-slate-900/30 border ${kpi.color.split(' ')[0]} rounded-2xl p-6 backdrop-blur-sm group hover:scale-[1.02] transition-all`}>
+              <div className="flex justify-between items-start mb-2">
+                <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest">{kpi.label}</p>
+                <span className="text-xl rotate-12 group-hover:rotate-0 transition-transform">{kpi.icon}</span>
               </div>
-              <div className="text-3xl opacity-20">📉</div>
+              <div className={`text-3xl font-black ${kpi.color.split(' ')[1]}`}>{kpi.value}</div>
+              <p className="text-slate-500 text-[10px] mt-1 font-medium">{kpi.sub}</p>
             </div>
-            <p className="text-slate-400 text-xs">Pérdida por cancelaciones/no-shows</p>
-            <div className="mt-3 h-1 bg-slate-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-red-500/80 transition-all"
-                style={{ width: `${Math.min((metrics.hemorragiaHoy / 500) * 100, 100)}%` }}
-              ></div>
-            </div>
-          </div>
-
-          {/* KPI: Dinero Recuperado */}
-          <div className="group bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-green-500/30 rounded-2xl p-6 hover:border-green-500/60 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <p className="text-green-400/70 text-xs font-bold uppercase tracking-widest mb-2">
-                  ✨ Dinero Recuperado
-                </p>
-                <div className="text-4xl font-black text-green-400">{formatMoney(metrics.dineroRecuperado)}</div>
-              </div>
-              <div className="text-3xl opacity-20">📈</div>
-            </div>
-            <p className="text-slate-400 text-xs">Por citas confirmadas hoy</p>
-            <div className="mt-3 h-1 bg-slate-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-green-500/80 transition-all"
-                style={{ width: `${Math.min((metrics.dineroRecuperado / 500) * 100, 100)}%` }}
-              ></div>
-            </div>
-          </div>
-
-          {/* KPI: Citas en Riesgo */}
-          <div className="group bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-orange-500/30 rounded-2xl p-6 hover:border-orange-500/60 hover:shadow-lg hover:shadow-orange-500/20 transition-all duration-300">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <p className="text-orange-400/70 text-xs font-bold uppercase tracking-widest mb-2">
-                  ⚠️ Citas en Riesgo
-                </p>
-                <div className="text-4xl font-black text-orange-400">{metrics.citasEnRiesgo}</div>
-              </div>
-              <div className="text-3xl opacity-20">🎯</div>
-            </div>
-            <p className="text-slate-400 text-xs">Pendientes confirmación (24h)</p>
-            <div className="mt-3 h-1 bg-slate-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-orange-500/80 transition-all"
-                style={{ width: `${Math.min((metrics.citasEnRiesgo / 20) * 100, 100)}%` }}
-              ></div>
-            </div>
-          </div>
-
-          {/* KPI: Tasa No-Show */}
-          <div className="group bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-cyan-500/30 rounded-2xl p-6 hover:border-cyan-500/60 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <p className="text-cyan-400/70 text-xs font-bold uppercase tracking-widest mb-2">
-                  📊 Tasa No-Show
-                </p>
-                <div className="text-4xl font-black text-cyan-400">{metrics.tasaNoShow}%</div>
-              </div>
-              <div className="text-3xl opacity-20">📈</div>
-            </div>
-            <p className="text-slate-400 text-xs">Histórico vs Benchmark (15-25%)</p>
-            <div className="mt-3 h-1 bg-slate-700 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-cyan-500/80 transition-all"
-                style={{ width: `${Math.min((metrics.tasaNoShow / 25) * 100, 100)}%` }}
-              ></div>
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* OPERATIONAL SUMMARY SECTION */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* PALANCA 2: Ingresos Rescatados - Métricas de Impacto */}
-          <div className="bg-gradient-to-br from-cyan-950/50 to-slate-900/50 border-2 border-cyan-500/40 rounded-2xl p-6 hover:border-cyan-500/80 hover:shadow-2xl hover:shadow-cyan-500/30 transition-all duration-300 relative overflow-hidden group">
-            {/* Glow effect */}
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl group-hover:bg-cyan-500/40 transition-all duration-300"></div>
-
-            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 relative z-10">
-              <span className="text-2xl">💎</span>
-              Ingresos Rescatados
-            </h3>
-            <div className="space-y-4 relative z-10">
-              {/* Ingresos rescatados hoy */}
-              <div className="p-4 bg-cyan-950/40 border border-cyan-500/30 rounded-lg hover:bg-cyan-950/60 transition-all">
-                <p className="text-cyan-300/80 text-xs font-bold uppercase tracking-wider mb-2">Hoy</p>
-                <p className="text-3xl font-black text-cyan-400">{formatMoney(metrics.dineroRecuperado)}</p>
+        {/* FEED DE ACCIÓN Y CEREBRO */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+          {/* CEREBRO EN ACCIÓN (Módulo de Agentes) */}
+          <div className="lg:col-span-2 bg-slate-900/50 border border-slate-800 rounded-3xl p-8 relative overflow-hidden shadow-inner font-mono">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(56,189,248,0.05),transparent)] pointer-events-none"></div>
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-sky-500 shadow-[0_0_10px_rgba(56,189,248,1)] animate-pulse"></div>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-sky-400">Cerebro en Acción</h3>
               </div>
-
-              {/* Dinero en riesgo */}
-              <div className="p-4 bg-orange-950/40 border border-orange-500/30 rounded-lg hover:bg-orange-950/60 transition-all">
-                <p className="text-orange-300/80 text-xs font-bold uppercase tracking-wider mb-2">En Riesgo (24h)</p>
-                <p className="text-3xl font-black text-orange-400">{formatMoney(metrics.dineroEnRiesgo)}</p>
-              </div>
-
-              {/* Pérdida mensual */}
-              <div className="p-4 bg-red-950/40 border border-red-500/30 rounded-lg hover:bg-red-950/60 transition-all">
-                <p className="text-red-300/80 text-xs font-bold uppercase tracking-wider mb-2">Pérdida/Mes</p>
-                <p className="text-3xl font-black text-red-400">{formatMoney(metrics.hemorragiaMes)}</p>
-              </div>
+              <span className="text-[10px] text-slate-500">v3.0.4-STABLE</span>
             </div>
-          </div>
 
-          {/* Hemorragia del Mes */}
-          <div className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-red-500/30 rounded-2xl p-6 hover:border-red-500/60 transition-all">
-            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-              <span className="text-2xl">💰</span>
-              Impacto Financiero
-            </h3>
             <div className="space-y-4">
-              <div>
-                <p className="text-slate-400 text-xs uppercase tracking-widest mb-2">Pérdida Este Mes</p>
-                <p className="text-3xl font-black text-red-400">{formatMoney(metrics.hemorragiaMes)}</p>
-              </div>
-              <div>
-                <p className="text-slate-400 text-xs uppercase tracking-widest mb-2">Dinero en Riesgo (Hoy)</p>
-                <p className="text-3xl font-black text-orange-400">{formatMoney(metrics.dineroEnRiesgo)}</p>
-              </div>
-              <div className="mt-6 p-4 bg-green-950/30 border border-green-500/30 rounded-lg">
-                <p className="text-green-400/80 text-xs font-bold uppercase tracking-widest mb-1">
-                  Potencial de Recuperación
-                </p>
-                <p className="text-2xl font-black text-green-400">{formatMoney(metrics.dineroRecuperado)}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* PALANCA 3: Motor Operacional - Recuperaciones Recientes Feed */}
-          <div className="bg-gradient-to-br from-green-950/50 to-slate-900/50 border-2 border-green-500/40 rounded-2xl p-6 hover:border-green-500/80 hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-300 relative overflow-hidden group">
-            {/* Glow effect */}
-            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-green-500/20 rounded-full blur-3xl group-hover:bg-green-500/40 transition-all duration-300"></div>
-
-            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2 relative z-10">
-              <span className="text-2xl">⚡</span>
-              Sistema en Acción
-            </h3>
-            <div className="space-y-3 relative z-10">
-              {metrics.recentRecoveries && metrics.recentRecoveries.length > 0 ? (
-                metrics.recentRecoveries.slice(0, 5).map(recovery => (
-                  <div key={recovery.id} className="flex items-start gap-3 p-3 bg-green-950/40 border border-green-500/40 rounded-lg hover:bg-green-950/60 hover:border-green-400/60 transition-all group/item">
-                    <div className="text-green-400 mt-0.5 text-lg font-bold animate-pulse">✓</div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-green-200 text-sm font-semibold group-hover/item:text-green-100 transition-colors">
-                        Recuperada: {recovery.patientName}
-                      </p>
-                      <p className="text-slate-300 text-xs mt-1.5 font-mono">
-                        📅 {recovery.appointmentDate}
-                      </p>
-                      <p className="text-green-400/70 text-xs mt-1 font-semibold">
-                        ⏰ {formatRelativeTime(recovery.recoveredAt)}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-6 text-center bg-slate-800/30 border border-slate-700/30 rounded-lg">
-                  <p className="text-slate-300 text-sm font-semibold mb-1">🤖 Sistema activo</p>
-                  <p className="text-slate-500 text-xs">Monitoreando citas en tiempo real...</p>
+              {[
+                { agent: 'DOC-AGNT', action: 'Analizando hemorragia en agenda...', status: 'RUNNING', color: 'text-sky-400' },
+                { agent: 'RECV-BOT', action: 'Confirmando cita de "Sr. García"...', status: 'SUCCESS', color: 'text-emerald-400' },
+                { agent: 'META-DOC', action: 'Actualizando Arquitectura de Claridad...', status: 'COMPLETED', color: 'text-indigo-400' }
+              ].map((log, i) => (
+                <div key={i} className="flex items-center gap-4 text-xs">
+                  <span className="text-slate-600">[{new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}]</span>
+                  <span className={`font-bold ${log.color}`}>{log.agent}</span>
+                  <span className="text-slate-400">::</span>
+                  <span className="text-slate-200">{log.action}</span>
+                  <div className="flex-1 border-b border-dashed border-slate-800"></div>
+                  <span className={`text-[10px] font-bold ${log.status === 'RUNNING' ? 'animate-pulse text-sky-400' : 'text-slate-500'}`}>
+                    {log.status}
+                  </span>
                 </div>
-              )}
+              ))}
+            </div>
+            
+            <div className="mt-8 pt-6 border-t border-slate-800/50 flex items-center justify-between">
+              <p className="text-[10px] text-slate-500">
+                <span className="text-sky-500 font-bold">INFO:</span> Todos los agentes operando bajo protocolos AAA.
+              </p>
+              <div className="flex gap-1">
+                {[1, 2, 3].map(i => <div key={i} className="w-1 h-1 rounded-full bg-sky-500/50"></div>)}
+              </div>
+            </div>
+          </div>
+
+          {/* PREINSCRIPCIONES (Palanca de Control) */}
+          <div className="bg-slate-900/30 border border-slate-800 rounded-3xl p-8 border-l-4 border-l-indigo-500">
+            <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
+              🎯 Próximos Pasos
+            </h3>
+            <div className="space-y-6">
+              <div className="group cursor-pointer">
+                <p className="text-[10px] font-bold text-indigo-400 uppercase mb-1 tracking-widest">Inmediato</p>
+                <p className="text-sm text-slate-200 group-hover:text-white transition-colors">Activar rescate automático para el Dr. Salazar</p>
+              </div>
+              <div className="h-px bg-slate-800"></div>
+              <div className="group cursor-pointer opacity-50">
+                <p className="text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">Próximamente</p>
+                <p className="text-sm text-slate-400">Actualizar activos cognitivos de Restaurante</p>
+              </div>
+              <button className="w-full mt-6 py-4 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-sky-500/20 hover:scale-[1.02] active:scale-95 transition-all">
+                Ejecutar Plan Cognitivo
+              </button>
             </div>
           </div>
         </div>
 
-        {/* NAVIGATION MENU */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          <Link
-            href="/prospects"
-            className="group p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-cyan-500/30 rounded-2xl hover:border-cyan-500/60 hover:shadow-lg hover:shadow-cyan-500/20 transition-all"
-          >
-            <div className="text-3xl mb-3">🔍</div>
-            <h4 className="font-bold text-white mb-2">Prospectos</h4>
-            <p className="text-slate-400 text-sm">Gestiona tu pipeline de ventas</p>
-          </Link>
+        {/* SUCCESS LOOP FEEDBACK */}
+        <SuccessLoop />
 
-          <Link
-            href="/pendientes"
-            className="group p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-orange-500/30 rounded-2xl hover:border-orange-500/60 hover:shadow-lg hover:shadow-orange-500/20 transition-all"
-          >
-            <div className="text-3xl mb-3">⚡</div>
-            <h4 className="font-bold text-white mb-2">Pendientes</h4>
-            <p className="text-slate-400 text-sm">Decisiones y acciones urgentes</p>
-          </Link>
+        {/* ASISTENTE COGNITIVO FLOTANTE (3 PALANCAS) */}
+        <FloatingChat />
 
-          <Link
-            href="/dashboard/calculator"
-            className="group p-6 bg-gradient-to-br from-slate-900/50 to-slate-800/50 border border-violet-500/30 rounded-2xl hover:border-violet-500/60 hover:shadow-lg hover:shadow-violet-500/20 transition-all"
-          >
-            <div className="text-3xl mb-3">📊</div>
-            <h4 className="font-bold text-white mb-2">Calculadora Premium</h4>
-            <p className="text-slate-400 text-sm">Ajusta parámetros y simula escenarios</p>
-          </Link>
-        </div>
-
-        {/* CTA SECTION */}
-        <div className="p-8 bg-gradient-to-r from-cyan-950/30 via-blue-950/30 to-violet-950/30 border border-cyan-500/30 rounded-2xl text-center">
-          <h4 className="text-2xl font-bold text-white mb-3">🤖 Sistema Autónomo</h4>
-          <p className="text-slate-300 mb-6 max-w-2xl mx-auto">
-            El motor operacional está escaneando citas en tiempo real. Las confirmaciones automáticas se enviarán vía
-            WhatsApp según se configuren. (En Phase 4)
-          </p>
-          <button className="px-8 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white font-bold rounded-lg hover:shadow-xl hover:shadow-cyan-500/50 transition-all transform hover:scale-105">
-            Ver Prescripciones 🎯
-          </button>
+        {/* FOOTER NAV RAPIDO */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Interesados', icon: '🔍', href: '/prospects' },
+            { label: 'Bitácora', icon: '📖', href: '/dashboard/logs' },
+            { label: 'Configuración', icon: '⚙️', href: '/settings' },
+            { label: 'Ecosistema', icon: '🌐', href: '/ecosystem' }
+          ].map(btn => (
+            <Link key={btn.label} href={btn.href} className="p-4 bg-slate-900/40 border border-slate-800 rounded-2xl flex items-center justify-center gap-3 hover:bg-slate-800 transition-all group">
+              <span className="text-lg grayscale group-hover:grayscale-0 transition-all">{btn.icon}</span>
+              <span className="text-xs font-bold text-slate-500 group-hover:text-white transition-colors">{btn.label}</span>
+            </Link>
+          ))}
         </div>
       </div>
-      </div> {/* cierre del relative */}
     </div>
   )
 }

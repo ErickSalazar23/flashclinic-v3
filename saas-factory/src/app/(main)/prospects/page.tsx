@@ -9,10 +9,10 @@ export const dynamic = 'force-dynamic'
 async function ProspectsList() {
   const result = await listProspects()
 
-  if (!result.ok) {
+  if (result.ok === false) {
     return (
-      <div className="rounded-md bg-red-500/10 border border-red-500/20 p-4">
-        <p className="text-sm text-red-400">Error al cargar prospectos: {result.error}</p>
+      <div className="rounded-md bg-red-50 p-4">
+        <p className="text-sm text-red-700">Error al cargar prospectos: {result.error}</p>
       </div>
     )
   }

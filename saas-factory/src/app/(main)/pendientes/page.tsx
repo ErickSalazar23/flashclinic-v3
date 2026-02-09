@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
 async function PendientesList() {
   const result = await listDecisions({ status: 'PENDING' })
 
-  if (!result.ok) {
+  if (result.ok === false) {
     return (
       <div className="rounded-md bg-red-50 p-4">
         <p className="text-sm text-red-700">Error al cargar pendientes: {result.error}</p>

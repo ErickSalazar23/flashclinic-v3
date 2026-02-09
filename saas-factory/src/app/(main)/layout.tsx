@@ -1,5 +1,7 @@
 import { Sidebar } from '@/shared/components'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Flash Clinic V3',
   description: 'Motor de Adquisición Médica',

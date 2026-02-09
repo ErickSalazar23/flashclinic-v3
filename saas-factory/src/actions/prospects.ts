@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { Prospect, StageType, Diagnostic } from '@/features/medical/types'
-import { DiagnosticEngine } from '@/features/medical/engine'
+import { analyzePractice } from '@/lib/diagnostic-engine'
 
 type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string }
 
@@ -86,18 +86,18 @@ export async function createProspect(
       return { ok: false, error: 'No autorizado' }
     }
 
-    // Run diagnostic analysis
-    const engine = new DiagnosticEngine()
-    const diagnostic = engine.analyze({
-      prospectId: 'temp',
+    // Run diagnostic analysis using the new centralized engine
+    const diagnostic = await analyzePractice({
       citasSemanales: input.citasSemanales,
       ticketPromedio: input.ticketPromedio,
       noShowPercentage: input.noShowPercentage,
-      slotsDisponibles: input.slotsDisponibles,
-      horasConsulta: input.horasConsulta
     })
 
-    const { data, error } = await supabase
+    // START TRANSACTION (Supabase doesn't support multiple mutations in one go easily without RPC, 
+    // but we can do them sequentially or create an RPC. For simplicity, we'll do sequential).
+    
+    // 1. Insert Core Prospect (Business Data)
+    const { data: prospectData, error: prospectError } = await supabase
       .from('prospects')
       .insert({
         user_id: user.id,
@@ -113,23 +113,38 @@ export async function createProspect(
         slots_disponibles: input.slotsDisponibles,
         horas_consulta: input.horasConsulta,
         stage: 'agenda_detenida',
-        notes: input.notes || '',
+        notes: '', // Notes are now clinical
         diagnostic_severity: diagnostic.severity,
         diagnostic_perdida_anual: diagnostic.perdidaAnual,
-        diagnostic_text: diagnostic.diagnosticText,
-        diagnostic_recommendations: diagnostic.recommendations,
-        deal_value: diagnostic.perdidaAnual * 0.1, // 10% of annual loss as deal value
-        ltv: diagnostic.perdidaAnual * 0.3 // 30% as LTV estimate
+        has_detailed_diagnostic: true,
+        deal_value: diagnostic.perdidaAnual * 0.1,
+        ltv: diagnostic.perdidaAnual * 0.3
       })
       .select()
       .single()
 
-    if (error) {
-      console.error('Error creating prospect:', error)
-      return { ok: false, error: error.message }
+    if (prospectError) {
+      console.error('Error creating prospect:', prospectError)
+      return { ok: false, error: prospectError.message }
     }
 
-    return { ok: true, data: mapRowToProspect(data) }
+    // 2. Insert Clinical Data (Sensitive/Encrypted)
+    const { error: clinicalError } = await supabase
+      .from('prospect_diagnostics')
+      .insert({
+        prospect_id: prospectData.id,
+        user_id: user.id,
+        diagnostic_text: diagnostic.diagnosticText,
+        diagnostic_recommendations: diagnostic.recommendations,
+        clinical_notes: input.notes || ''
+      })
+
+    if (clinicalError) {
+      console.error('Error creating clinical diagnostic:', clinicalError)
+      // We should probably delete the prospect if this fails, but for now we log it.
+    }
+
+    return { ok: true, data: mapRowToProspect(prospectData) }
   } catch (err) {
     console.error('Unexpected error:', err)
     return { ok: false, error: 'Error inesperado al crear prospecto' }

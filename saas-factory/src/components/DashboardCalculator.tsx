@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { calculateAnnualLoss } from '@/lib/diagnostic-engine'
 
 interface DashboardCalculatorProps {
   initialPatients?: number
@@ -28,9 +29,12 @@ export function DashboardCalculator({
 
   // Calculate metrics on mount and when inputs change
   useEffect(() => {
-    const dailyLoss = (patients * (noshows / 100)) * ticket
-    const monthly = dailyLoss * days
-    const yearly = monthly * 12
+    const yearly = calculateAnnualLoss({
+      citasSemanales: patients,
+      ticketPromedio: ticket,
+      noShowPercentage: noshows
+    })
+    const monthly = yearly / 12
     const lost = Math.round((patients * (noshows / 100)) * days)
     const recovery = monthly * 0.7
 

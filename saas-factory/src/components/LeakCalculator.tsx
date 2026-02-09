@@ -41,24 +41,38 @@ export function LeakCalculator() {
 
   // Calculate metrics
   useEffect(() => {
-    const dailyLoss = (patients * (noshows / 100)) * ticket
-    const monthly = dailyLoss * days
+    const appointmentsPerDay = patients
+    const feePerPatient = ticket
+    const noShowPercentage = noshows / 100
+    const workingDays = days
+
+    // Protocolo Matemático Estricto
+    // 1. Citas Perdidas/Mes (Redondeado para coherencia humana)
+    const lostAppointmentsPerMonth = Math.round((appointmentsPerDay * noShowPercentage) * workingDays)
+    
+    // 2. Fuga Mensual = (Honorario Promedio) x (Citas Perdidas/Mes)
+    const monthly = feePerPatient * lostAppointmentsPerMonth
+    
+    // 3. Cálculo Anual = Fuga Mensual x 12
     const yearly = monthly * 12
-    const lost = Math.round((patients * (noshows / 100)) * days)
-    const recovery = monthly * 0.7
+    
+    // 4. Lógica de Potencial (70% de la Fuga Mensual)
+    // Ajustado a múltiplos de 10 para mayor claridad comercial
+    const rawRecovery = monthly * 0.7
+    const recovery = Math.round(rawRecovery / 10) * 10
 
     setMonthlyLoss(monthly)
     setYearlyLoss(yearly)
-    setLostPatients(lost)
+    setLostPatients(lostAppointmentsPerMonth)
     setPotentialRecovery(recovery)
   }, [patients, ticket, noshows, days])
 
   const formatMoney = (value: number) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
+    const formatted = new Intl.NumberFormat('es-ES', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(value)
+    return `$ ${formatted}`
   }
 
   return (

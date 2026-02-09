@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 export default async function DashboardPage() {
   const metricsResult = await getAppointmentsMetrics()
 
-  if (!metricsResult.ok) {
+  if (metricsResult.ok === false) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-[#0a1628] to-slate-950 text-white p-6 flex items-center justify-center">
         <div className="max-w-md text-center">

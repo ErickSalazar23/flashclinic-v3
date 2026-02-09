@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm install --prefix ./saas-factory && npm run build",
-  "outputDirectory": "saas-factory/.next",
-  "framework": "nextjs"
+  "installCommand": "cd saas-factory && npm install",
+  "buildCommand": "cd saas-factory && npm run build",
+  "outputDirectory": "saas-factory/.next"
 }

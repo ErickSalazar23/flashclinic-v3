@@ -38,7 +38,7 @@ export function ProspectForm({ onSuccess, onCancel }: ProspectFormProps) {
     startTransition(async () => {
       const result = await createProspect(input)
 
-      if (!result.ok) {
+      if (result.ok === false) {
         setError(result.error)
         return
       }

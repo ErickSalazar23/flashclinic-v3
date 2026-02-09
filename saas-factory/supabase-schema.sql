@@ -32,11 +32,12 @@ CREATE TABLE IF NOT EXISTS prospects (
     CHECK (stage IN ('agenda_detenida', 'diagnostico_proceso', 'tratamiento_aplicado', 'recuperacion_exitosa')),
   stage_updated_at TIMESTAMPTZ DEFAULT NOW(),
 
-  -- Diagnostic Results
+  -- Diagnostic Summary (Non-sensitive)
   diagnostic_severity TEXT CHECK (diagnostic_severity IN ('critical', 'severe', 'moderate', 'stable')),
   diagnostic_perdida_anual DECIMAL(12,2),
-  diagnostic_text TEXT,
-  diagnostic_recommendations JSONB DEFAULT '[]'::jsonb,
+  
+  -- Reference to deep clinical data
+  has_detailed_diagnostic BOOLEAN DEFAULT FALSE,
 
   -- Business Value
   deal_value DECIMAL(12,2) DEFAULT 0,
@@ -80,6 +81,29 @@ CREATE TABLE IF NOT EXISTS decisions (
   metadata JSONB DEFAULT '{}'::jsonb,
 
   -- User who owns this decision
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE
+);
+
+-- =====================================================
+-- PROSPECT_DIAGNOSTICS TABLE (Sensitive Clinical Data)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS prospect_diagnostics (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+  prospect_id UUID NOT NULL REFERENCES prospects(id) ON DELETE CASCADE,
+  
+  -- Clinical Data (Encrypted/Sensitive)
+  diagnostic_text TEXT,
+  diagnostic_recommendations JSONB DEFAULT '[]'::jsonb,
+  clinical_notes TEXT,
+  
+  -- RAG Metadata
+  is_grounded_by_protocol BOOLEAN DEFAULT FALSE,
+  protocol_reference TEXT,
+
+  -- User who owns this record
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE
 );
 
@@ -260,6 +284,25 @@ CREATE POLICY "Users can update their own patients"
   ON patients FOR UPDATE
   USING (auth.uid() = user_id);
 
+-- Policies for prospect_diagnostics
+ALTER TABLE prospect_diagnostics ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own diagnostics"
+  ON prospect_diagnostics FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own diagnostics"
+  ON prospect_diagnostics FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own diagnostics"
+  ON prospect_diagnostics FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own diagnostics"
+  ON prospect_diagnostics FOR DELETE
+  USING (auth.uid() = user_id);
+
 -- Policies for appointments
 CREATE POLICY "Users can view their own appointments"
   ON appointments FOR SELECT
@@ -283,6 +326,11 @@ CREATE TRIGGER update_patients_updated_at
 
 CREATE TRIGGER update_appointments_updated_at
   BEFORE UPDATE ON appointments
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_prospect_diagnostics_updated_at
+  BEFORE UPDATE ON prospect_diagnostics
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
