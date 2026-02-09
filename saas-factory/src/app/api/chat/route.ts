@@ -1,6 +1,4 @@
 import { streamText, tool } from 'ai'
-import { openai } from '@ai-sdk/openai'
-import { anthropic } from '@ai-sdk/anthropic'
 import { google } from '@ai-sdk/google'
 import { createServerSupabaseClient } from '@/lib/supabaseClient'
 import { z } from 'zod'
@@ -9,19 +7,10 @@ import { z } from 'zod'
 // 🤖 CONFIGURACIÓN DEL PROVEEDOR DE IA
 // ============================================
 
-const AI_PROVIDER = process.env.AI_PROVIDER || 'google'
 const AI_MODEL = process.env.AI_MODEL || 'gemini-1.5-flash'
 
 function getModel() {
-  switch (AI_PROVIDER) {
-    case 'openai':
-      return openai(AI_MODEL)
-    case 'anthropic':
-      return anthropic(AI_MODEL)
-    case 'google':
-    default:
-      return google(AI_MODEL)
-  }
+  return google(AI_MODEL)
 }
 
 // ============================================
